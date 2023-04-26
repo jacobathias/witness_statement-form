@@ -1,5 +1,5 @@
 {
-  "name": "witness_statement-form",
+  "name": "my-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,14 +9,29 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "18.16.0",
-    "@types/react": "18.0.38",
-    "@types/react-dom": "18.0.11",
-    "eslint": "8.39.0",
-    "eslint-config-next": "13.3.1",
-    "next": "13.3.1",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@fontsource/roboto": "^4.5.8",
+    "@formkit/auto-animate": "^1.0.0-beta.6",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/lab": "^5.0.0-alpha.121",
+    "@mui/material": "^5.12.2",
+    "@mui/styled-engine-sc": "^5.12.0",
+    "@mui/x-date-pickers": "^5.0.20",
+    "@next/font": "13.1.6",
+    "@react-spring/web": "^9.7.1",
+    "@types/material-ui": "^0.21.12",
+    "dayjs": "^1.11.7",
+    "eslint": "8.33.0",
+    "eslint-config-next": "13.1.6",
+    "next": "^13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.0.4"
+    "styled-components": "^5.3.10"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@types/react": "^18.0.34",
+    "typescript": "^5.0.4"
   }
 }

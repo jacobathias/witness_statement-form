@@ -23,10 +23,10 @@ interface IMyDateSelect {
                     {label}
                 </LabelT>
                 <DesktopDatePicker
-                    // inputFormat="MM/DD/YYYY"
+                    inputFormat="MM/DD/YYYY"
                     value={value}
                     onChange={handleChange}
-                    renderInput={(params : any) => <TextField variant="filled" {...params} />} />
+                    renderInput={(params : any) => <TextField {...params} />} />
             </LocalizationProvider>
         </Box>
     );

@@ -91,12 +91,13 @@ export default function Home(children: any) {
             </Grid>
 
             <Grid item md={4}>
-              <DateSelect label="Date of Incident"></DateSelect>
+            <DateSelect label="Date if incident"></DateSelect>              
             </Grid>
 
             <Grid item md={4}>
               <LabelT>{TimeOfIncident}</LabelT>
               <TimeSelect></TimeSelect>
+              
             </Grid>
 
             <Grid item md={3}>
@@ -212,6 +213,4 @@ export default function Home(children: any) {
     </form>
   );
 }
-function dayjs(arg0: string): any {
-  throw new Error("Function not implemented.");
-}
+

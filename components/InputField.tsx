@@ -28,7 +28,7 @@ export default function InputField({
         error = {error}
         label={error ? (labelError):('')}
         // variant="filled"
-        size="small"
+        // size="small"
         helperText = {error ? (helperText):('')}
         
         fullWidth={fullWidth !== false && fullWidth !== null}
