@@ -7,24 +7,30 @@ import TextField, { TextFieldProps } from "@mui/material/TextField";
 import { Grid } from "@mui/material";
 import dayjs from "dayjs";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-export default function TimeSelect() {
+
+interface IMyDateSelect {
+  label:string;
+  name:string;
+}
+
+
+export default function TimeSelect({label, name}:IMyDateSelect) {
   const [value, setValue] = React.useState(dayjs("2014-08-18T21:11:54"));
-  const handleChange = (newValue: any) => {
+  const handleTime = (newValue: any) => {
     setValue(newValue);
   };
   return (
     <Box sx={{ width: "100%" }}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Grid container spacing={0}>
-          <Grid item md={6} marginBottom={2}>
-            <TimePicker
-              components={{ OpenPickerIcon: AccessTimeIcon }}
-              value={value}
-              onChange={handleChange}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </Grid>
-        </Grid>
+        <TimePicker
+          components={{ OpenPickerIcon: AccessTimeIcon }}
+          value={value}
+          label={label}
+          onChange={handleTime}
+          renderInput={(params: JSX.IntrinsicAttributes & TextFieldProps) => (
+            <TextField {...params} required name={name} value={value}/>
+          )}
+        />
       </LocalizationProvider>
     </Box>
   );

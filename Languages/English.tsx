@@ -1,7 +1,7 @@
 export const Instructions ="Instructions";
 export const PleaseState ="Please state your account of the incident below clearly, honestly, as fully as possible, and to the best of your recollection. The purpose of an investigation is to gather facts and pertinent information about the incident.";
 export const WitnessEmployeeData = 'Witness Employee Data'
-export const EmployeeName = 'Employee name'
+export const EmployeeName = 'Employee Name'
 export const WorkingTitle = 'Working Title'
 export const PersonalNumber = 'Personal Number'
 export const DateOfIncident = 'Date of Incident'
@@ -9,7 +9,7 @@ export const TimeOfIncident = 'Time of Incident'
 export const Srs = 'SRS System Number (if known)'
 export const SiteLocation = 'Site Location/Department'
 export const SupervisorName = 'Supervisor'
-export const SupTelephone = 'Supervisor Telephone Number'
+export const SupTelephone = 'Supervisor Phone Number'
 export const SupEmail = 'Supervisor Email'
 export const IncidentDescription = 'Incident Description'
 export const PleaseDescribe  = 'Please describe in your own words (in detail) the sequence of events that led to this incident:'

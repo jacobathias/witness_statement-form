@@ -1,7 +1,16 @@
-import { Box, Button, Container, Grid, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  FormControl,
+  Grid,
+  TextField,
+  TextFieldProps,
+} from "@mui/material";
 import {
   DateOfIncident,
   EmployeeName,
+  WorkingTitle,
   IncidentDescription,
   Instructions,
   PersonalNumber,
@@ -13,7 +22,6 @@ import {
   SupTelephone,
   SupervisorName,
   WitnessEmployeeData,
-  WorkingTitle,
   DescribeTheWork,
   IndicateWhichPart,
   ToAvoid,
@@ -21,12 +29,6 @@ import {
   Affirm,
   Signature,
   DateSigned,
-  Revision,
-  Description,
-  By,
-  RevisionDate,
-  InitialRelease,
-  DocumentUncontrolled,
   Affirmation,
   TimeOfIncident,
 } from "../../Languages/English";
@@ -38,179 +40,342 @@ import DateSelect from "../../components/DateSelect";
 import React, { useState } from "react";
 
 import TimeSelect from "../../components/TimeSelect";
-import SendIcon from '@mui/icons-material/Send';
+import SendIcon from "@mui/icons-material/Send";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { sendContactForm } from "../../lib/api";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
+
+import dayjs from "dayjs";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+
+const initValues = {
+  name: "",
+  workingTitle: "",
+  personalNumber: "",
+  dateOfIncident: dayjs("2014-08-18T21:11:54"),
+  timeOfIncident: dayjs("2014-08-18T21:11:54"),
+  siteLocation: "",
+  supervisor: "",
+  supEmail: "",
+  supTelephone: "",
+  supervisorName: "",
+  witnessEmployeeData: "",
+  pleaseDescribe: "",
+  describeTheWork: "",
+  indicateWhichPart: "",
+  toAvoid: "",
+  safetyRuleViolated: "",
+  affirm: "",
+  signature: "",
+  dateSigned: "",
+};
+const initState = { values: initValues };
 
 export default function Home(children: any) {
-  const [_EmployeeName, setEmployeeName] = useState("");
-  const [_WorkingTittle, setWorkingTittle] = useState("");
-  const [_PersonalNumber, setPersonalNumber] = useState("");
-  const [_DateOfIncident, setDateOfIncident] = useState("");
-  const [_TimeOfIncident, setTimeOfIncident] = useState("");
-  const [_Srs, setSrs] = useState("");
-  const [_SiteLocation, setSiteLocation] = useState("");
-  const [_Supervisor, setSupervisor] = useState("");
-  const [_SupEmail, setSupEmail] = useState("");
-  const [_SupTelephone, setSupTelephone] = useState("");
-  const [_SupervisorName, setSupervisorName] = useState("");
-  const [_WitnessEmployeeData, setWitnessEmployeeData] = useState("");
-  const [_WorkingTitle, setWorkingTitle] = useState("");
-  const [_DescribeTheWork, setDescribeTheWork] = useState("");
-  const [_IndicateWhichPart, setIndicateWhichPart] = useState("");
-  const [_ToAvoid, setToAvoid] = useState("");
-  const [_safetyRuleViolated, setsafetyRuleViolated] = useState("");
-  const [_Affirm, setAffirm] = useState("");
-  const [_Signature, setSignature] = useState("");
-  const [_DateSigned, setDateSigned] = useState("");
-  const [_, set] = useState("");
+  const [state, setState] = useState(initState);
+  const [touched, setTouched] = useState({});
+
+  const { values, isLoading, error } = state;
+
+  const onBlur = ({ target }: any) =>
+    setTouched((prev) => ({ ...prev, [target.name]: true }));
+
+  const handleChange = ({ target }: any) =>
+    setState((prev) => ({
+      ...prev,
+      values: { ...prev.values, [target.name]: target.value },
+    }));
+
+  const onSubmit = async () => {
+    setState((prev) => ({
+      ...prev,
+      isLoading: true,
+    }));
+
+    try {
+      await sendContactForm(values);
+      setTouched({});
+      setState(initState);
+    } catch (error: any) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error.message,
+      }));
+    }
+  };
 
   return (
     //  <TitleT>{Instructions}</TitleT>
-    <form>
-      <Box>
-        <Container>
-          <Grid container columnGap={1}>
-            <Grid item md={11}>
-              <TitleT>{Instructions}</TitleT>
-              <LabelT>{PleaseState}</LabelT>
-              <TitleT>{WitnessEmployeeData}</TitleT>
-            </Grid>
+    <Container>
+      {/*  ######################################### HEADER */}
+      <Grid container spacing={1}>
+        <Grid item md={12}>
+          <TitleT>{Instructions}</TitleT>
+          <LabelT>{PleaseState}</LabelT>
+          <TitleT>{WitnessEmployeeData}</TitleT>
+        </Grid>
 
-            <Grid item md={4}>
-              <LabelT>{EmployeeName}</LabelT>
-              <InputField></InputField>
-            </Grid>
+        {/*  ######################################### Witness Employee Data */}
 
-            <Grid item md={4}>
-              <LabelT>{WorkingTitle}</LabelT>
-              <InputField></InputField>
-            </Grid>
+        <Grid item md={4} sm={4}>
+          {/* <LabelT>{EmployeeName}</LabelT> */}
 
-            <Grid item md={3}>
-              <LabelT>{PersonalNumber}</LabelT>
-              <InputField></InputField>
-            </Grid>
+          <TextField
+            type="text"
+            label={EmployeeName}
+            required
+            fullWidth
+            name="name"
+            error={touched.name && !values.name}
+            value={values.name}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={4}>
-            <DateSelect label="Date if incident"></DateSelect>              
-            </Grid>
+        <Grid item md={4} sm={4}>
+          <TextField
+            type="input"
+            label={WorkingTitle}
+            required
+            fullWidth
+            name="workingTitle"
+            error={touched.workingTitle && !values.workingTitle}
+            value={values.workingTitle}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={4}>
-              <LabelT>{TimeOfIncident}</LabelT>
-              <TimeSelect></TimeSelect>
-              
-            </Grid>
+        <Grid item md={4} sm={4}>
+          <TextField
+            type="phone"
+            label={PersonalNumber}
+            fullWidth
+            name="personalNumber"
+            value={values.personalNumber}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={3}>
-              <LabelT>{Srs}</LabelT>
-              <InputField></InputField>
-            </Grid>
+        <Grid item md={4} sm={4}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} >
+            <DesktopDatePicker
+              name='dateOfIncident'
+              label={DateOfIncident}
+              inputFormat="MM/DD/YYYY"
+              value={values.dateOfIncident}
+              onChange={handleChange }
+              renderInput={(params: any) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </Grid>
 
-            <Grid item md={11}>
-              <LabelT>{SiteLocation}</LabelT>
-              <InputField multiLine></InputField>
-            </Grid>
+        <Grid item md={4} sm={4}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker
+              // components={{ OpenPickerIcon: AccessTimeIcon }}
+              value={values.timeOfIncident}
+              label={TimeOfIncident}
+              onChange={handleChange}
+              renderInput={(
+                params: JSX.IntrinsicAttributes & TextFieldProps
+              ) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </Grid>
 
-            <Grid item md={4}>
-              <LabelT>{SupervisorName}</LabelT>
-              <InputField></InputField>
-            </Grid>
+        <Grid item md={12} sm={12}>
+          <TextField
+            type="text"
+            label={SiteLocation}
+            fullWidth
+            multiline
+            name="siteLocation"
+            value={values.siteLocation}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={4}>
-              <LabelT>{SupTelephone}</LabelT>
-              <InputField></InputField>
-            </Grid>
+        <Grid item md={4} sm={4}>
+          <TextField
+            type="text"
+            label={SupervisorName}
+            required
+            fullWidth
+            name="supervisorName"
+            error={touched.supervisorName && !values.supervisorName}
+            value={values.supervisorName}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={3}>
-              <LabelT>{SupEmail}</LabelT>
-              <InputField></InputField>
-            </Grid>
+        <Grid item md={4} sm={4}>
+          <TextField
+            type="phone"
+            label={SupTelephone}
+            required
+            fullWidth
+            name="supTelephone"
+            error={touched.supTelephone && !values.supTelephone}
+            value={values.supTelephone}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={11}>
-              <TitleT>{IncidentDescription}</TitleT>
-            </Grid>
+        <Grid item md={4} sm={4}>
+          <TextField
+            type="email"
+            label={SupEmail}
+            fullWidth
+            name="supEmail"
+            value={values.supEmail}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={11}>
-              <LabelT>{PleaseDescribe}</LabelT>
-              <InputField multiLine></InputField>
-            </Grid>
+        {/*  ######################################### Incident Description */}
+        <Grid item md={12} sm={12}>
+          <TitleT>{IncidentDescription}</TitleT>
+        </Grid>
 
-            <Grid item md={11}>
-              <LabelT>{DescribeTheWork}</LabelT>
-              <InputField multiLine></InputField>
-            </Grid>
+        <Grid item md={12} sm={12}>
+          <LabelT>{PleaseDescribe}</LabelT>
+          <TextField
+            type="text"
+            fullWidth
+            multiline
+            name="pleaseDescribe"
+            error={touched.pleaseDescribe && !values.pleaseDescribe}
+            value={values.pleaseDescribe}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={11}>
-              <LabelT>{IndicateWhichPart}</LabelT>
-              <InputField multiLine></InputField>
-            </Grid>
+        <Grid item md={12} sm={12}>
+          <LabelT>{DescribeTheWork}</LabelT>
+          <TextField
+            type="text"
+            fullWidth
+            multiline
+            name="describeTheWork"
+            error={touched.describeTheWork && !values.describeTheWork}
+            value={values.describeTheWork}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={11}>
-              <LabelT>{ToAvoid}</LabelT>
-              <InputField multiLine></InputField>
-            </Grid>
+        <Grid item md={12} sm={12}>
+          <LabelT>{IndicateWhichPart}</LabelT>
+          <TextField
+            type="text"
+            fullWidth
+            multiline
+            name="indicateWhichPart"
+            error={touched.indicateWhichPart && !values.indicateWhichPart}
+            value={values.indicateWhichPart}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={11}>
-              <LabelT>{safetyRuleViolated}</LabelT>
-              <InputField multiLine></InputField>
-            </Grid>
+        <Grid item md={12} sm={12}>
+          <LabelT>{ToAvoid}</LabelT>
+          <TextField
+            type="text"
+            fullWidth
+            multiline
+            name="toAvoid"
+            error={touched.toAvoid && !values.toAvoid}
+            value={values.toAvoid}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={11}>
-              <TitleT>{Affirm}</TitleT>
-            </Grid>
+        <Grid item md={12} sm={12}>
+          <LabelT>{safetyRuleViolated}</LabelT>
+          <TextField
+            type="text"
+            fullWidth
+            multiline
+            name="safetyRuleViolated"
+            error={touched.safetyRuleViolated && !values.safetyRuleViolated}
+            value={values.safetyRuleViolated}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+        </Grid>
 
-            <Grid item md={11}>
-              <LabelT>{Affirmation}</LabelT>
-              {/* <InputField></InputField> */}
-            </Grid>
+        <Grid item md={12} sm={12}>
+          <TitleT>{Affirm}</TitleT>
+        </Grid>
 
-            <Grid item md={6}>
-              <LabelT>{Signature}</LabelT>
-              <InputField></InputField>
-            </Grid>
+        <Grid item md={12} sm={12}>
+          <LabelT>{Affirmation}</LabelT>
+          {/* <InputField></InputField> */}
+        </Grid>
 
-            <Grid item md={5}>
-              <LabelT>{DateSigned}</LabelT>
-              <LabelT>a</LabelT>
-            </Grid>
+        <Grid item md={6} sm={6}>
+          <LabelT>{Signature}</LabelT>
+          <InputField></InputField>
+        </Grid>
 
-            <Grid item md={11}>
-              <TitleT>{Revision}</TitleT>
-            </Grid>
+        <Grid item md={6} sm={6}>
+          <DateSelect label={DateSigned} />
+        </Grid>
 
-            <Grid item md={3}>
-              <LabelT>Rev</LabelT>
-              <LabelT>A</LabelT>
-            </Grid>
+        {/* <Grid item md={12} sm={12}>
+          <TitleT>{Revision}</TitleT>
+        </Grid>
 
-            <Grid item md={3}>
-              <LabelT>{Description}</LabelT>
-              <LabelT>{InitialRelease}</LabelT>
-            </Grid>
+        <Grid item md={3} sm={3}>
+          <LabelT>Rev</LabelT>
+          <LabelT>A</LabelT>
+        </Grid>
 
-            <Grid item md={3}>
-              <LabelT>{By}</LabelT>
-              <LabelT>Angela Valentine</LabelT>
-            </Grid>
+        <Grid item md={3} sm={3}>
+          <LabelT>{Description}</LabelT>
+          <LabelT>{InitialRelease}</LabelT>
+        </Grid>
 
-            <Grid item md={2}>
-              <LabelT>{RevisionDate}</LabelT>
-              <LabelT>{RevisionDate}</LabelT>
-            </Grid>
+        <Grid item md={3} sm={3}>
+          <LabelT>{By}</LabelT>
+          <LabelT>Angela Valentine</LabelT>
+        </Grid>
 
-            <Grid item md={11}>
-              <LabelT>{DocumentUncontrolled}</LabelT>
-            </Grid>
-            <Grid item md={12}>
-              <Button variant="contained" 
-              endIcon={<SendIcon />}
-              >
-                Send
-              </Button>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-    </form>
+        <Grid item md={2} sm={3}>
+          <LabelT>{RevisionDate}</LabelT>
+          <LabelT>05-18-2020</LabelT>
+        </Grid>
+
+        <Grid item md={12} sm={12}>
+          <LabelT>{DocumentUncontrolled}</LabelT>
+        </Grid> */}
+
+        <Grid item md={12} sm={12} marginTop={2}>
+          <LoadingButton
+            variant="contained"
+            disabled={!values.name && !values.workingTitle}
+            endIcon={<SendIcon />}
+            onClick={onSubmit}
+            loading={isLoading}
+          >
+            Send
+          </LoadingButton>
+        </Grid>
+      </Grid>
+    </Container>
   );
 }
-

@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
+    "@emotion/react": "^11.10.8",
+    "@emotion/styled": "^11.10.8",
     "@fontsource/roboto": "^4.5.8",
     "@formkit/auto-animate": "^1.0.0-beta.6",
     "@mui/icons-material": "^5.11.16",
@@ -27,7 +27,8 @@
     "next": "^13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "styled-components": "^5.3.10"
+    "styled-components": "^5.3.10",
+    "webpack-hot-middleware": "^2.25.3"
   },
   "devDependencies": {
     "@types/node": "^18.15.11",
