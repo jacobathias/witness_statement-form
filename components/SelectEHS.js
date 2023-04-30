@@ -46,7 +46,7 @@ export default function SelectEHS({ onChange, value }) {
         fullWidth
       >
         {EHSagents.map((i) => (
-          <MenuItem value={i.email}>{i.name}</MenuItem>
+          <MenuItem value={i.email} key={i.name}>{i.name}</MenuItem>
         ))}
       </Select>
     </FormControl>

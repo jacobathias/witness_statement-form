@@ -82,11 +82,12 @@ export default function Home(children) {
   const [touched, setTouched] = useState({});
   const [timeValue, setTimeValue] = useState(dayjs());
   const [dateValue, setDateValue] = useState(dayjs());
-  const [language, setLanguage] = React.useState("en");
+  const [language, setLanguage] = React.useState("es");
 
   // Handles
     const handleLang = (event) => {
     i18next.changeLanguage(event.target.value);
+    console.log('asdasd')
     setLanguage(event.target.value);
   };
     

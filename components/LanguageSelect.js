@@ -17,16 +17,16 @@ export default function LanguageSelect({ onChange, value }) {
       </InputLabel>
 
       <Select value={value} onChange={onChange} label="Select Language">
-        <MenuItem value="en" >
+        <MenuItem value="en" key={'en'} >
           <img src="https://img.icons8.com/color/48/null/usa-circular.png" />
           Englsih
         </MenuItem>
 
-        <MenuItem value="es">
+        <MenuItem value="es" key={'es'}>
           {" "}
           <img src="https://img.icons8.com/color/48/null/spain2-circular.png" />Spanish
         </MenuItem>
-        <MenuItem value="ht">
+        <MenuItem value="ht" key={'ht'}>
           <img src="https://img.icons8.com/color/48/null/the-republic-of-haiti-circular.png" />Haitian Creole
         </MenuItem>
       </Select>
