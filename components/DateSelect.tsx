@@ -12,9 +12,9 @@ interface IMyDateSelect {
 
 export default function MyDateSelect({ label }: IMyDateSelect) {
   const [value, setValue] = React.useState(dayjs("2014-08-18T21:11:54"));
-  const handleChange = (newValue: any) => {
-    setValue(newValue);
-  };
+
+  const handleChange = (newValue: any) => {setValue(newValue);};
+  
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DesktopDatePicker

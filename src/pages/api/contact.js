@@ -1,24 +1,33 @@
 // import { mailOptions, transporter } from "../../../config/nodemailer";
 
 const WITNESS_FIELDS = {
-  name: EmployeeName,
-  name: EmployeeName,
+  employeeName: EmployeeName,
   workingTitle: WorkingTitle,
   personalNumber: PersonalNumber,
+
+  siteLocation: SiteLocation,
+
+  supervisorName: SupervisorName,
+  supTelephone: SupTelephone,
+  supEmail: SupEmail,
+
+  pleaseDescribe: PleaseDescribe,
+
+  describeTheWork: DescribeTheWork,
+
+  indicateWhichPart: IndicateWhichPart,
+
+  toAvoid: ToAvoid,
+
+  safetyRuleViolated: SafetyRuleViolated,
+
+  // affirm: Affirm,
+
+  // signature: Signature,
+  // dateSigned: DateSigned,
+  // add with spread ops
   dateOfIncident: DateOfIncident,
   timeOfIncident: TimeOfIncident,
-  siteLocation: SiteLocation,
-  supEmail: SupEmail,
-  supTelephone: SupTelephone,
-  supervisorName: SupervisorName,
-  witnessEmployeeData: WitnessEmployeeData,
-  describeTheWork: DescribeTheWork,
-  indicateWhichPart: IndicateWhichPart,
-  toAvoid: ToAvoid,
-  safetyRuleViolated: safetyRuleViolated,
-  affirm: Affirm,
-  signature: Signature,
-  dateSigned: DateSigned,
   
 };
 const generateEmailContent = (data) => {
@@ -38,13 +47,13 @@ const generateEmailContent = (data) => {
 };
 let b = "";
 // import { stringify } from "querystring";
-import { Affirm, DateOfIncident, DateSigned, DescribeTheWork, EmployeeName, IndicateWhichPart, PersonalNumber, Signature, SiteLocation, Srs, SupEmail, SupTelephone, SupervisorName, TimeOfIncident, ToAvoid, WitnessEmployeeData, WorkingTitle, safetyRuleViolated } from "../../../Languages/English";
+import { Affirm, DateOfIncident, DateSigned, DescribeTheWork, EmployeeName, IndicateWhichPart, PersonalNumber, PleaseDescribe, SafetyRuleViolated, Signature, SiteLocation, Srs, SupEmail, SupTelephone, SupervisorName, TimeOfIncident, ToAvoid, WitnessEmployeeData, WorkingTitle, safetyRuleViolated } from "../../../Languages/English";
 import { transporter, mailOptions } from "../../../config/nodemailer";
 const handler = async (req, res) => {
   if (req.method === "POST") {
     b = req.body;
     console.log(b.name);
-    if (!b.name) {
+    if (!b.employeeName) {
       return res.status(400).json({ message: "Bad request" });
     }
   }
@@ -52,13 +61,11 @@ const handler = async (req, res) => {
     await transporter.sendMail({
       ...mailOptions,
       ...generateEmailContent(b),
-      subject: `Witness Statement - ${b.name}`,
-      // text: "This is test string",
-      //  html: `<h1>${b.name} - ${b.workingTitle}</h1>`,
-      // html: html,
+      subject: `Witness Statement - ${b.employeeName}`,
+
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(400).json({ message: error.message });
   }
 
@@ -66,7 +73,3 @@ const handler = async (req, res) => {
 };
 
 export default handler;
-
-function page() {
-  return <p>asdasdasd</p>;
-}

@@ -7,39 +7,36 @@ import {
   TextField,
   TextFieldProps,
 } from "@mui/material";
-import {
-  DateOfIncident,
-  EmployeeName,
-  WorkingTitle,
-  IncidentDescription,
-  Instructions,
-  PersonalNumber,
-  PleaseDescribe,
-  PleaseState,
-  SiteLocation,
-  Srs,
-  SupEmail,
-  SupTelephone,
-  SupervisorName,
-  WitnessEmployeeData,
-  DescribeTheWork,
-  IndicateWhichPart,
-  ToAvoid,
-  safetyRuleViolated,
-  Affirm,
-  Signature,
-  DateSigned,
-  Affirmation,
-  TimeOfIncident,
-} from "../../Languages/English";
+// import {
+//   DateOfIncident,
+//   EmployeeName,
+//   WorkingTitle,
+//   IncidentDescription,
+//   Instructions,
+//   PersonalNumber,
+//   PleaseDescribe,
+//   PleaseState,
+//   SiteLocation,
+//   Srs,
+//   SupEmail,
+//   SupTelephone,
+//   SupervisorName,
+//   WitnessEmployeeData,
+//   DescribeTheWork,
+//   IndicateWhichPart,
+//   ToAvoid,
+//   safetyRuleViolated,
+//   Affirm,
+//   Signature,
+//   DateSigned,
+//   Affirmation,
+//   TimeOfIncident,
+// } from "../../Languages/English";
 import TitleT from "../../components/TitleT";
 import LabelT from "../../components/LabelT";
-import InputField from "../../components/InputField";
-import DateSelect from "../../components/DateSelect";
-
+import LanguageSelect from "../../components/LanguageSelect";
+import SelectEHS from "../../components/SelectEHS";
 import React, { useState } from "react";
-
-import TimeSelect from "../../components/TimeSelect";
 import SendIcon from "@mui/icons-material/Send";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { sendContactForm } from "../../lib/api";
@@ -47,59 +44,83 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { Translate } from "../pages/fetchCode.js";
+import { useTranslation } from "react-i18next";
+import i18next from "../i18n";
 
 import dayjs from "dayjs";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import "../i18n";
 
 const initValues = {
-  name: "",
-  workingTitle: "",
-  personalNumber: "",
-  dateOfIncident: dayjs("2014-08-18T21:11:54"),
-  timeOfIncident: dayjs("2014-08-18T21:11:54"),
-  siteLocation: "",
-  supervisor: "",
-  supEmail: "",
-  supTelephone: "",
-  supervisorName: "",
-  witnessEmployeeData: "",
-  pleaseDescribe: "",
-  describeTheWork: "",
-  indicateWhichPart: "",
-  toAvoid: "",
-  safetyRuleViolated: "",
-  affirm: "",
-  signature: "",
-  dateSigned: "",
+  employeeName: "Jacob Athias",
+  workingTitle: "EHS - Coordinator",
+  personalNumber: "4078790195",
+  siteLocation: "EHS Office - Venice",
+  supervisorName: "K.Kauffman",
+  supTelephone: "42312356",
+  supEmail: "kk@pgt.com",
+  pleaseDescribe: "I was walking and I tripped and fell",
+  describeTheWork: "Running inside the office",
+  indicateWhichPart: " Left buttocks",
+  toAvoid: "I won't run anymore inside the office",
+  safetyRuleViolated: "No rule violated, it's ok to run inside the office",
+  // affirm: "",
+
+  // signature: "",
+
+  // dateSigned: "",
 };
+
+// Cria um objeto values e armazena o objeto com initValues
 const initState = { values: initValues };
 
-export default function Home(children: any) {
+export default function Home(children) {
+
+  //Hooks
+  const { t } = useTranslation();
   const [state, setState] = useState(initState);
   const [touched, setTouched] = useState({});
+  const [timeValue, setTimeValue] = useState(dayjs());
+  const [dateValue, setDateValue] = useState(dayjs());
+  const [language, setLanguage] = React.useState("en");
 
-  const { values, isLoading, error } = state;
-
-  const onBlur = ({ target }: any) =>
-    setTouched((prev) => ({ ...prev, [target.name]: true }));
-
-  const handleChange = ({ target }: any) =>
+  // Handles
+    const handleLang = (event) => {
+    i18next.changeLanguage(event.target.value);
+    setLanguage(event.target.value);
+  };
+    
+  const handleChange = ({ target }) =>
     setState((prev) => ({
       ...prev,
       values: { ...prev.values, [target.name]: target.value },
     }));
 
-  const onSubmit = async () => {
-    setState((prev) => ({
-      ...prev,
-      isLoading: true,
-    }));
+  const onBlur = ({ target }) =>
+    setTouched((prev) => ({ ...prev, [target.name]: true }));
+    
+    const handleTime = (newValue) => {
+      setTimeValue(newValue);
+    };
+    const handleDate = (newValue) => {
+    setDateValue(newValue);
+  };
 
+  //Busines Rules
+  const onSubmit = async () => {
+    setState((prev) => ({ ...prev, isLoading: true }));    
     try {
-      await sendContactForm(values);
+      //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
+      const new_values = {
+        ...values,
+        dateOfIncident: dateValue.format("MM-DD-YYYY"),
+        timeOfIncident: timeValue.format("HH:mm A"),
+      };
+      // console.log(new_values);
+      await sendContactForm(new_values);
       setTouched({});
       setState(initState);
-    } catch (error: any) {
+    } catch (error) {
       setState((prev) => ({
         ...prev,
         isLoading: false,
@@ -108,15 +129,39 @@ export default function Home(children: any) {
     }
   };
 
+  const { values, isLoading, error } = state;
+  
   return (
     //  <TitleT>{Instructions}</TitleT>
+    
     <Container>
       {/*  ######################################### HEADER */}
       <Grid container spacing={1}>
+        <Grid container justifyContent={"space-between"}>
+          <Grid item md={6} sm={12} marginTop={2}>
+            <LoadingButton
+              variant="contained"
+              // disabled={!values.name && !values.workingTitle}
+              endIcon={<SendIcon />}
+              onClick={Translate}
+              // loading={isLoading}
+            >
+              Translate
+            </LoadingButton>
+          </Grid>
+
+          <Grid item md={6}>
+            <LanguageSelect
+              onChange={handleLang}
+              value={language}
+            ></LanguageSelect>
+          </Grid>
+        </Grid>
+
         <Grid item md={12}>
-          <TitleT>{Instructions}</TitleT>
-          <LabelT>{PleaseState}</LabelT>
-          <TitleT>{WitnessEmployeeData}</TitleT>
+          <TitleT>{t("Instructions")}</TitleT>
+          <LabelT>{t("PleaseState")}</LabelT>
+          <TitleT>{t("WitnessEmployeeData")}</TitleT>
         </Grid>
 
         {/*  ######################################### Witness Employee Data */}
@@ -126,12 +171,12 @@ export default function Home(children: any) {
 
           <TextField
             type="text"
-            label={EmployeeName}
+            label={t("EmployeeName")}
             required
             fullWidth
-            name="name"
-            error={touched.name && !values.name}
-            value={values.name}
+            name="employeeName"
+            error={touched.name && !values.employeeName}
+            value={values.employeeName}
             onChange={handleChange}
             onBlur={onBlur}
           ></TextField>
@@ -140,7 +185,7 @@ export default function Home(children: any) {
         <Grid item md={4} sm={4}>
           <TextField
             type="input"
-            label={WorkingTitle}
+            label={t("WorkingTitle")}
             required
             fullWidth
             name="workingTitle"
@@ -154,7 +199,7 @@ export default function Home(children: any) {
         <Grid item md={4} sm={4}>
           <TextField
             type="phone"
-            label={PersonalNumber}
+            label={t("PersonalNumber")}
             fullWidth
             name="personalNumber"
             value={values.personalNumber}
@@ -164,14 +209,13 @@ export default function Home(children: any) {
         </Grid>
 
         <Grid item md={4} sm={4}>
-          <LocalizationProvider dateAdapter={AdapterDayjs} >
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
-              name='dateOfIncident'
-              label={DateOfIncident}
+              label={t("DateOfIncident")}
               inputFormat="MM/DD/YYYY"
-              value={values.dateOfIncident}
-              onChange={handleChange }
-              renderInput={(params: any) => <TextField {...params} />}
+              value={dateValue}
+              onChange={handleDate}
+              renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
         </Grid>
@@ -180,12 +224,10 @@ export default function Home(children: any) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker
               // components={{ OpenPickerIcon: AccessTimeIcon }}
-              value={values.timeOfIncident}
-              label={TimeOfIncident}
-              onChange={handleChange}
-              renderInput={(
-                params: JSX.IntrinsicAttributes & TextFieldProps
-              ) => <TextField {...params} />}
+              value={timeValue}
+              label={t("TimeOfIncident")}
+              onChange={handleTime}
+              renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
         </Grid>
@@ -193,7 +235,7 @@ export default function Home(children: any) {
         <Grid item md={12} sm={12}>
           <TextField
             type="text"
-            label={SiteLocation}
+            label={t("SiteLocation")}
             fullWidth
             multiline
             name="siteLocation"
@@ -206,7 +248,7 @@ export default function Home(children: any) {
         <Grid item md={4} sm={4}>
           <TextField
             type="text"
-            label={SupervisorName}
+            label={t("SupervisorName")}
             required
             fullWidth
             name="supervisorName"
@@ -220,7 +262,7 @@ export default function Home(children: any) {
         <Grid item md={4} sm={4}>
           <TextField
             type="phone"
-            label={SupTelephone}
+            label={t("SupTelephone")}
             required
             fullWidth
             name="supTelephone"
@@ -234,7 +276,7 @@ export default function Home(children: any) {
         <Grid item md={4} sm={4}>
           <TextField
             type="email"
-            label={SupEmail}
+            label={t("SupEmail")}
             fullWidth
             name="supEmail"
             value={values.supEmail}
@@ -245,11 +287,11 @@ export default function Home(children: any) {
 
         {/*  ######################################### Incident Description */}
         <Grid item md={12} sm={12}>
-          <TitleT>{IncidentDescription}</TitleT>
+          <TitleT>{t("IncidentDescription")}</TitleT>
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{PleaseDescribe}</LabelT>
+          <LabelT>{t("PleaseDescribe")}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -263,7 +305,7 @@ export default function Home(children: any) {
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{DescribeTheWork}</LabelT>
+          <LabelT>{t("DescribeTheWork")}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -277,7 +319,7 @@ export default function Home(children: any) {
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{IndicateWhichPart}</LabelT>
+          <LabelT>{t("IndicateWhichPart")}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -291,7 +333,7 @@ export default function Home(children: any) {
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{ToAvoid}</LabelT>
+          <LabelT>{t("ToAvoid")}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -305,7 +347,7 @@ export default function Home(children: any) {
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{safetyRuleViolated}</LabelT>
+          <LabelT>{t("SafetyRuleViolated")}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -318,23 +360,23 @@ export default function Home(children: any) {
           ></TextField>
         </Grid>
 
-        <Grid item md={12} sm={12}>
+        {/* <Grid item md={12} sm={12}>
           <TitleT>{Affirm}</TitleT>
-        </Grid>
+        </Grid> */}
 
-        <Grid item md={12} sm={12}>
+        {/* <Grid item md={12} sm={12}>
           <LabelT>{Affirmation}</LabelT>
-          {/* <InputField></InputField> */}
-        </Grid>
+          <InputField></InputField>
+        </Grid> */}
 
-        <Grid item md={6} sm={6}>
+        {/* <Grid item md={6} sm={6}>
           <LabelT>{Signature}</LabelT>
           <InputField></InputField>
-        </Grid>
+        </Grid> */}
 
-        <Grid item md={6} sm={6}>
+        {/* <Grid item md={6} sm={6}>
           <DateSelect label={DateSigned} />
-        </Grid>
+        </Grid> */}
 
         {/* <Grid item md={12} sm={12}>
           <TitleT>{Revision}</TitleT>
@@ -364,17 +406,25 @@ export default function Home(children: any) {
           <LabelT>{DocumentUncontrolled}</LabelT>
         </Grid> */}
 
-        <Grid item md={12} sm={12} marginTop={2}>
-          <LoadingButton
-            variant="contained"
-            disabled={!values.name && !values.workingTitle}
-            endIcon={<SendIcon />}
-            onClick={onSubmit}
-            loading={isLoading}
-          >
-            Send
-          </LoadingButton>
+        <Grid container marginTop={2}>
+          
+          <Grid item md={6} sm={12}>
+            <SelectEHS></SelectEHS>
+          </Grid>
+
+          <Grid item md={6} sm={12}>
+            <LoadingButton
+              variant="contained"
+              disabled={!values.name && !values.workingTitle}
+              endIcon={<SendIcon />}
+              onClick={onSubmit}
+              loading={isLoading}
+            >
+              Send
+            </LoadingButton>
+          </Grid>
         </Grid>
+
       </Grid>
     </Container>
   );
