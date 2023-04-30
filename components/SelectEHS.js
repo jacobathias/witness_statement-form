@@ -10,7 +10,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 // import { IconFlagTR, IconFlagDE, IconFlagUS } from "material-ui-flags";
 
 export default function SelectEHS({ onChange, value }) {
-  const [ehs, setEHS] = React.useState();
+  const [ehs, setEHS] = React.useState('');
 
   const handleEHs = (event) => {
     setEHS(event.target.value);
@@ -46,7 +46,7 @@ export default function SelectEHS({ onChange, value }) {
         fullWidth
       >
         {EHSagents.map((i) => (
-          <MenuItem value={i.email} key={i.name}>{i.name}</MenuItem>
+          <MenuItem value={i.email} key={i.name}>{i.name} - {i.email}</MenuItem>
         ))}
       </Select>
     </FormControl>

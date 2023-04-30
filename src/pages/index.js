@@ -1,37 +1,9 @@
 import {
-  Box,
-  Button,
   Container,
-  FormControl,
   Grid,
   TextField,
-  TextFieldProps,
 } from "@mui/material";
-// import {
-//   DateOfIncident,
-//   EmployeeName,
-//   WorkingTitle,
-//   IncidentDescription,
-//   Instructions,
-//   PersonalNumber,
-//   PleaseDescribe,
-//   PleaseState,
-//   SiteLocation,
-//   Srs,
-//   SupEmail,
-//   SupTelephone,
-//   SupervisorName,
-//   WitnessEmployeeData,
-//   DescribeTheWork,
-//   IndicateWhichPart,
-//   ToAvoid,
-//   safetyRuleViolated,
-//   Affirm,
-//   Signature,
-//   DateSigned,
-//   Affirmation,
-//   TimeOfIncident,
-// } from "../../Languages/English";
+
 import TitleT from "../../components/TitleT";
 import LabelT from "../../components/LabelT";
 import LanguageSelect from "../../components/LanguageSelect";
@@ -47,7 +19,6 @@ import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { Translate } from "../pages/fetchCode.js";
 import { useTranslation } from "react-i18next";
 import i18next from "../i18n";
-
 import dayjs from "dayjs";
 import "../i18n";
 
@@ -87,33 +58,20 @@ export default function Home(children) {
   // Handles
     const handleLang = (event) => {
     i18next.changeLanguage(event.target.value);
-    console.log('asdasd')
     setLanguage(event.target.value);
   };
     
-  const handleChange = ({ target }) =>
-    setState((prev) => ({
-      ...prev,
-      values: { ...prev.values, [target.name]: target.value },
-    }));
-
-  const onBlur = ({ target }) =>
-    setTouched((prev) => ({ ...prev, [target.name]: true }));
-    
-    const handleTime = (newValue) => {
-      setTimeValue(newValue);
-    };
-    const handleDate = (newValue) => {
-    setDateValue(newValue);
-  };
+    const handleChange = ({ target }) =>setState((prev) => ({...prev,values: { ...prev.values, [target.name]: target.value },}));
+    const onBlur = ({ target }) => setTouched((prev) => ({ ...prev, [target.name]: true }));
+    const handleTime = (newValue) => {setTimeValue(newValue);};
+    const handleDate = (newValue) => {setDateValue(newValue);};
 
   //Busines Rules
   const onSubmit = async () => {
     setState((prev) => ({ ...prev, isLoading: true }));    
     try {
       //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
-      const new_values = {
-        ...values,
+      const new_values = {...values,
         dateOfIncident: dateValue.format("MM-DD-YYYY"),
         timeOfIncident: timeValue.format("HH:mm A"),
       };
@@ -142,10 +100,8 @@ export default function Home(children) {
           <Grid item md={6} sm={12} marginTop={2}>
             <LoadingButton
               variant="contained"
-              // disabled={!values.name && !values.workingTitle}
               endIcon={<SendIcon />}
-              onClick={Translate}
-              // loading={isLoading}
+              onClick={(e)=>(Translate(language,"en"))}
             >
               Translate
             </LoadingButton>

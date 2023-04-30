@@ -1,4 +1,4 @@
-export async function Translate() {
+export async function Translate(src,target) {
 
 	console.log('Translating')
 	const url = 'https://text-translator2.p.rapidapi.com/translate';
@@ -10,9 +10,9 @@ export async function Translate() {
 			'X-RapidAPI-Host': 'text-translator2.p.rapidapi.com'
 		},
 		body: new URLSearchParams({
-			source_language: 'en',
-			target_language: 'pt',
-			text: 'How are you'
+			source_language: src,
+			target_language: target,
+			text: 'Hola como esta?'
 		})
 	};
 
