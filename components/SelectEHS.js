@@ -27,11 +27,19 @@ export default function SelectEHS({ onChange, value }) {
     },
     {
       name: "Jon Fitzgerald",
-      email: "JFitzgerald@pgtindustries.com",
+      email: "jfitzgerald@pgtindustries.com",
     },
     {
       name: "Agustin Uribe",
       email: "agustin.uribe@pgtindustries.com",
+    },
+    {
+      name: "Jake Personal",
+      email: "jacobathias.stm@gmail.com",
+    },
+    {
+      name: "This email",
+      email: "inaciojacobit@gmail.com",
     },
   ];
 
@@ -46,7 +54,7 @@ export default function SelectEHS({ onChange, value }) {
         fullWidth
       >
         {EHSagents.map((i) => (
-          <MenuItem value={i.email} key={i.name}>{i.name} - {i.email}</MenuItem>
+          <MenuItem value={i.email} key={i.name}>{i.name}</MenuItem>
         ))}
       </Select>
     </FormControl>

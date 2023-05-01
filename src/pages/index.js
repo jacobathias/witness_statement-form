@@ -57,16 +57,16 @@ const initValues = {
 // Cria um objeto values e armazena o objeto com initValues
 const initState = { values: initValues };
 
-export default function Home(children) {
+export default function Home () {
 
   //Hooks
   const { t } = useTranslation();
-  const [state, setState] = useState(initState);
-  const [touched, setTouched] = useState({});
+  const [state, setState] =         useState(initState);
+  const [touched, setTouched] =     useState({});
   const [timeValue, setTimeValue] = useState(dayjs());
   const [dateValue, setDateValue] = useState(dayjs());
-  const [language, setLanguage] = React.useState("es");
-  const [ehs, setEHS] = React.useState('jathias@pgtindustries.com');
+  const [language, setLanguage] =   useState("en");
+  const [ehs, setEHS] =             useState('jathias@pgtindustries.com');
 
   
   // Handles
@@ -79,14 +79,13 @@ export default function Home(children) {
   };
     
     const handleChange = ({ target }) =>setState((prev) => ({...prev,values: { ...prev.values, [target.name]: target.value },}));
-    const onBlur = ({ target }) => setTouched((prev) => ({ ...prev, [target.name]: true }));
-    const handleTime = (newValue) => {setTimeValue(newValue);};
-    const handleDate = (newValue) => {setDateValue(newValue);};
+    const onBlur =       ({ target }) => setTouched((prev) => ({ ...prev, [target.name]: true }));
+    const handleTime =   (newValue) =>   {setTimeValue(newValue);};
+    const handleDate =   (newValue) =>   {setDateValue(newValue);};
 
   //Busines Rules
-  const onSubmit = async () => {
-    setState((prev) => ({ ...prev, isLoading: true }));    
-    try {
+  const onSubmit = async () => {setState((prev) => ({ ...prev, isLoading: true }));    
+  try {
       //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
       const new_values = {...values,
         dateOfIncident: dateValue.format("MM-DD-YYYY"),
@@ -112,6 +111,7 @@ export default function Home(children) {
     //  <TitleT>{Instructions}</TitleT>
     
     <Container>
+  
       {/*  ######################################### HEADER */}
       <Grid container spacing={1}>
         <Grid container justifyContent={"space-between"}>
