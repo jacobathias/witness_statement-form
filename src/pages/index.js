@@ -23,6 +23,18 @@ import dayjs from "dayjs";
 import "../i18n";
 
 const initValues = {
+  // employeeName: '',
+  // workingTitle: '',
+  // personalNumber: '',
+  // siteLocation: '',
+  // supervisorName: '',
+  // supTelephone: '',
+  // supEmail: '',
+  // pleaseDescribe: '',
+  // describeTheWork: '',
+  // indicateWhichPart: '',
+  // toAvoid: '',
+  // safetyRuleViolated: '',
   employeeName: "Jacob Athias",
   workingTitle: "EHS - Coordinator",
   personalNumber: "4078790195",
@@ -54,8 +66,13 @@ export default function Home(children) {
   const [timeValue, setTimeValue] = useState(dayjs());
   const [dateValue, setDateValue] = useState(dayjs());
   const [language, setLanguage] = React.useState("es");
+  const [ehs, setEHS] = React.useState('jathias@pgtindustries.com');
 
+  
   // Handles
+  const handleEHs = (event) => {
+    setEHS(event.target.value);
+  };
     const handleLang = (event) => {
     i18next.changeLanguage(event.target.value);
     setLanguage(event.target.value);
@@ -74,6 +91,7 @@ export default function Home(children) {
       const new_values = {...values,
         dateOfIncident: dateValue.format("MM-DD-YYYY"),
         timeOfIncident: timeValue.format("HH:mm A"),
+        to: ehs
       };
       // console.log(new_values);
       await sendContactForm(new_values);
@@ -366,7 +384,7 @@ export default function Home(children) {
         <Grid container marginTop={2}>
           
           <Grid item md={6} sm={12}>
-            <SelectEHS></SelectEHS>
+            <SelectEHS value={ehs} onChange={handleEHs}></SelectEHS>
           </Grid>
 
           <Grid item md={6} sm={12}>

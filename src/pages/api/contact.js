@@ -53,8 +53,9 @@ const handler = async (req, res) => {
   }
 
   try {
+    const newMailOption = {...mailOptions, to:body.to}
     await transporter.sendMail({
-      ...mailOptions,
+      ...newMailOption,
       ...generateEmailContent(body),
       subject: `Witness Statement - ${body.employeeName}`,
 

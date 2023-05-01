@@ -40,8 +40,8 @@ export default function SelectEHS({ onChange, value }) {
       {" "}
       <InputLabel>Choose EHS agent</InputLabel>
       <Select
-        value={ehs}
-        onChange={handleEHs}
+        value={value}
+        onChange={onChange}
         label="Choose EHS agent"
         fullWidth
       >
