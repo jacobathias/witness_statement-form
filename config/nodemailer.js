@@ -17,8 +17,6 @@ export const mailOptions = {
     // attachments: [
     //     {
     //       filename: 'Witness-Statement.pdf',
-    //       content: 'pdf',
-    //       contentType: 'application/pdf'
     //     }
     //   ]
 }

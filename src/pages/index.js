@@ -72,8 +72,7 @@ export default function Home (){
         dateOfIncident: dateValue.format("MM-DD-YYYY"),
         timeOfIncident: timeValue.format("HH:mm A"),
         to: ehs,
-        // attachment: generatePDF(),
-        // Translation: await Translate(language, makeLongString())
+        Translation: await Translate(language, makeLongString())
       };
       await sendContactForm(new_values);
       setTouched({});

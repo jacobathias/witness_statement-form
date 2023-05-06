@@ -22,7 +22,9 @@ import {
   safetyRuleViolated,
 } from "../../../Languages/English";
 import { transporter, mailOptions } from "../../../config/nodemailer";
-
+import jsPDF from 'jspdf';
+import puppeteer from 'puppeteer';
+import { Readable } from 'stream';
 
 const WITNESS_FIELDS = {
   employeeName: EmployeeName,
@@ -49,6 +51,35 @@ const WITNESS_FIELDS = {
   Translation: "",
 };
 
+
+const generatePdfFromHtml = async (html) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  // Define o conteúdo da página com o HTML recebido
+  await page.setContent(html);
+
+  // Gera o PDF a partir do conteúdo da página
+  const pdfStream = await page.pdf({ 
+    format: 'A4',
+    border: {
+      top: '2cm',
+      right: '2cm',
+      bottom: '2cm',
+      left: '2cm',
+    },
+  });
+
+  await browser.close();
+
+  // Converte o buffer do PDF para uma stream legível
+  const pdfReadableStream = new Readable();
+  pdfReadableStream.push(pdfStream);
+  pdfReadableStream.push(null);
+
+  return pdfReadableStream;
+};
+
 const generateEmailContent = (data) => {
   // CAMPOS
   const stringData = Object.entries(data).reduce(
@@ -58,7 +89,7 @@ const generateEmailContent = (data) => {
   console.log(stringData);
   // VALORES
   const htmlData = Object.entries(data).reduce((str, [key, val]) => {
-    return (str += `<h3 >${WITNESS_FIELDS[key]}:</h3><p>${val}</p>`);
+    return (str += `<h3 >${WITNESS_FIELDS[key]}</h3><p>${val}</p>`);
   }, "");
 
   return {
@@ -75,33 +106,47 @@ const handler = async (req, res) => {
     if (!body.employeeName) {
       return res.status(400).json({ message: "Bad requesto" });
     }
+
+
+    // const doc = new jsPDF();
+    // doc.text('TESTE', 20, 20);
+    // var pdf = (doc.output('datauristring'));
+    //var content = pdf.split(';base64,').pop();
+
+
+    try {
+
+      const emailContent = generateEmailContent(body)
+
+      const content = await generatePdfFromHtml(emailContent.html);
+
+      const newMailOption = {
+        ...mailOptions,
+        to: body.to,
+        attachments: [
+          {
+            filename: 'teste.pdf',
+            content,
+            encoding: 'base64',
+          },
+        ],
+ 
+      };
+      await transporter.sendMail({
+        ...newMailOption,
+        ...emailContent,
+        subject: `Witness Statement - ${body.employeeName}`,
+      });
+      console.log("Email Sent");
+    } catch (error) {
+      // console.log(error);
+      return res.status(400).json({ message: error.message });
+    }
+
+    res.status(200).json({ message: "Sucesso" });
   }
 
-  try {
-    // let file = await generatePDF();
-    const newMailOption = {
-      ...mailOptions,
-      to: body.to,
-      // attachments: [
-      //   {
-      //     filename: 'Witness-Statement.pdf',
-      //     content: fil,
-      //     contentType: body.attachment
-      //   }
-      // ]
-    };
-    await transporter.sendMail({
-      ...newMailOption,
-      ...generateEmailContent(body),
-      subject: `Witness Statement - ${body.employeeName}`,
-    });
-    console.log("Email Sent");
-  } catch (error) {
-    // console.log(error);
-    return res.status(400).json({ message: error.message });
-  }
-
-  res.status(200).json({ message: "Sucesso" });
+  return res.status(400).json({ message: 'Falha na requisição' });
 };
 
 export default handler;
