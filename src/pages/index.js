@@ -14,34 +14,46 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { Translate } from "./Translate";
-import { useTranslation } from "react-i18next";
-import i18next from "../i18n";
 import dayjs from "dayjs";
-import "../i18n";
 import  { generatePDF } from "../../components/PDFFile"
 import {emptyValues, enValues, esValues} from "./initValues.js"
+// import { useTranslation } from "react-i18next";
+// import i18next from "../i18n";
+// import "../i18n";
+import { useTranslation, i18n } from 'next-i18next'
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from 'next/router'
 
 const initState = { values: esValues };
 
-export default function Home () {
+export default function Home (){
   //Hooks
-  // const { t } = useTranslation();
-  function t(x) {return x} 
+  const { t } = useTranslation('common');
+  // function t(x) {return x} 
   const [state, setState] =         useState(initState);
   const [touched, setTouched] =     useState({});
   const [timeValue, setTimeValue] = useState(dayjs());
   const [dateValue, setDateValue] = useState(dayjs());
-  const [language, setLanguage] =   useState("es");
+  const [language, setLanguage] =   useState("en");
   const [ehs, setEHS] =             useState('jathias@pgtindustries.com');
   
   const { values, isLoading, error } = state;
+  const router = useRouter()
 
   // Handles
-  const handleEHs = (event) =>  {setEHS(event.target.value);};
-  const handleLang = (event) => {
-    i18next.changeLanguage(event.target.value);
-    setLanguage(event.target.value);
+  const handleEHs = (event) =>  {
+    setEHS(event.target.value);
   };
+
+
+  const handleLang = (event) => {
+    const newLocale = event.target.value;
+    const { pathname, asPath, query } = router
+    router.push({ pathname, query }, asPath, { locale: newLocale })
+    i18n.changeLanguage(newLocale);
+    setLanguage(newLocale);
+  };
+
    // useEffect(()=> {
       // i18next.changeLanguage(language);
   // })
@@ -75,25 +87,9 @@ export default function Home () {
   
   let fil;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   return (
     
-
+<Suspense>
     
     <Container>
   
@@ -302,6 +298,7 @@ export default function Home () {
             type="text"
             fullWidth
             multiline
+      
             name="toAvoid"
             error={touched.toAvoid && !values.toAvoid}
             value={values.toAvoid}
@@ -387,5 +384,20 @@ export default function Home () {
 
       </Grid>
     </Container>
+
+    </Suspense>
     );
 }
+
+
+
+//getServeSideProps wors too
+export const getStaticProps  = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale)),
+    },
+  };
+};
+
+// Error: next-i18next was unable to find a user config at C:\Users\jacob01\Documents\GitHub\Witness Statement\witness_statement-form\next-i18next.config.js
