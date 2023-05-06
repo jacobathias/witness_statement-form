@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, Suspense, useEffect } from "react";
 import {Container,Grid,TextField,Button} from "@mui/material";
 
 import TitleT from "../../components/TitleT";
@@ -12,33 +13,41 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
-import { Translate } from "../pages/fetchCode.js";
+import { Translate } from "./Translate";
 import { useTranslation } from "react-i18next";
 import i18next from "../i18n";
 import dayjs from "dayjs";
 import "../i18n";
 import  { generatePDF } from "../../components/PDFFile"
-import {emptyValues, enValues, esValues} from "../pages/initValues.js"
+import {emptyValues, enValues, esValues} from "./initValues.js"
 
 const initState = { values: esValues };
-export default function Home () {
 
+export default function Home () {
   //Hooks
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
+  function t(x) {return x} 
   const [state, setState] =         useState(initState);
   const [touched, setTouched] =     useState({});
   const [timeValue, setTimeValue] = useState(dayjs());
   const [dateValue, setDateValue] = useState(dayjs());
-  const [language, setLanguage] =   useState("en");
+  const [language, setLanguage] =   useState("es");
   const [ehs, setEHS] =             useState('jathias@pgtindustries.com');
-
+  
+  const { values, isLoading, error } = state;
 
   // Handles
-  const handleEHs = (event) => {setEHS(event.target.value);};
-  const handleLang = (event) => {i18next.changeLanguage(event.target.value);setLanguage(event.target.value);
+  const handleEHs = (event) =>  {setEHS(event.target.value);};
+  const handleLang = (event) => {
+    i18next.changeLanguage(event.target.value);
+    setLanguage(event.target.value);
   };
+   // useEffect(()=> {
+      // i18next.changeLanguage(language);
+  // })
+
     
-    const handleChange = ({ target }) =>  setState((prev) => ({...prev,values: { ...prev.values, [target.name]: target.value },}));
+    const handleChange = ({ target }) =>  setState((prev) =>   ({ ...prev, values:{ ...prev.values, [target.name]: target.value },}));
     const onBlur       = ({ target }) =>  setTouched((prev) => ({ ...prev, [target.name]: true }));
     const handleTime   =  (newValue)  => {setTimeValue(newValue);};
     const handleDate   =  (newValue)  => {setDateValue(newValue);};
@@ -51,50 +60,53 @@ export default function Home () {
         dateOfIncident: dateValue.format("MM-DD-YYYY"),
         timeOfIncident: timeValue.format("HH:mm A"),
         to: ehs,
+        attachment: generatePDF(),
         Translation: await Translate(language, makeLongString())
       };
-      // console.log(new_values);
       await sendContactForm(new_values);
       setTouched({});
       setState(initState);
-    } catch (error) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: error.message,
-      }));
-    }
+    } catch (error) {setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
   };
   
-  const { values, isLoading, error } = state;
 
   // CONVERT AVERY ATRIBUTE INTO ONE STRING FOR TRANSLATION
-  function makeLongString(){ 
-    return (Object.values(initValues).join(' || '));} 
+  function makeLongString(){ return (Object.values(values).join(' || '));} 
+  
   let fil;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
+    
+
+    
     <Container>
   
-      {/*  ######################################### HEADER */}
+      {/*  ######################################################################################################### HEADER */}
       <Grid container spacing={3}>
 
         <Grid container justifyContent={"space-between"}>
           <Grid item md={6} sm={12} marginTop={2}>
-        <Button onClick={()=>(fil = generatePDF())}>PDF to file</Button>
-        </Grid>
-          <Grid item md={6} sm={12} marginTop={2}>
-            <LoadingButton
-              variant="contained"
-              endIcon={<SendIcon />}
-              onClick={(e)=>(Translate(language, makeLongString()))}
-            >
-              Translate
-            </LoadingButton>
-          </Grid>
-          <Grid item md={6} sm={12} marginTop={2}>
-          </Grid>
-
-          <Grid item md={6} sm={12} marginTop={2}>
+            <Button 
+            variant="contained" 
+            onClick={()=>(generatePDF())}
+            >PDF to file
+            </Button>
           </Grid>
 
           <Grid item md={6}>
@@ -103,13 +115,6 @@ export default function Home () {
               value={language}
             ></LanguageSelect>
           </Grid>
-        </Grid>
-
-        <Grid item md={12}>
-        {/* <div className="PDF-Viewer">
-          <PdfComp document = {'document.pdf'}> </PdfComp>
-        </div> */}
-
         </Grid>
 
         <Grid item md={12}>
@@ -382,5 +387,5 @@ export default function Home () {
 
       </Grid>
     </Container>
-  );
+    );
 }

@@ -30,7 +30,7 @@ export default function MultiRadio({
         name="radio-buttons-group"
       >
         {itens.map((i: string) => (
-          <FormControlLabel value={i} control={<Radio/>} label={i} />
+          <FormControlLabel value={i} key={i} control={<Radio/>} label={i} />
         ))}
       </RadioGroup>
     </FormControl>

@@ -4,13 +4,18 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import HTTPApi from "i18next-http-backend";
 // import HTTPApi from "../Languages/";
 
-
-i18next.use(HTTPApi).use(LanguageDetector).use(initReactI18next).init({
-
-        fallbackLng: 'en',
+i18next
+  .use(HTTPApi)
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init({
+    fallbackLng: "en",
     interpolation: {
-        escapeValue:false
-    }}
-);
+      escapeValue: false,
+    },
+    react:{
+      useSuspense: true
+    }
+  });
 
-export default i18next
+export default i18next;

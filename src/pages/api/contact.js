@@ -85,12 +85,13 @@ const handler = async (req, res) => {
     const newMailOption = {
       ...mailOptions,
       to: body.to,
-      // attachments: [
-      //   {
-      //     filename: 'Witness-Statement.pdf',
-      //     content: file
-      //   }
-      // ]
+      attachments: [
+        {
+          filename: 'Witness-Statement.pdf',
+          content: fil,
+          contentType: body.attachment
+        }
+      ]
     };
     await transporter.sendMail({
       ...newMailOption,
