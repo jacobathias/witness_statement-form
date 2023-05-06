@@ -1,14 +1,10 @@
-import {
-  Container,
-  Grid,
-  TextField,
-} from "@mui/material";
+import React, { useState } from "react";
+import {Container,Grid,TextField,Button} from "@mui/material";
 
 import TitleT from "../../components/TitleT";
 import LabelT from "../../components/LabelT";
 import LanguageSelect from "../../components/LanguageSelect";
 import SelectEHS from "../../components/SelectEHS";
-import React, { useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { sendContactForm } from "../../lib/api";
@@ -21,42 +17,10 @@ import { useTranslation } from "react-i18next";
 import i18next from "../i18n";
 import dayjs from "dayjs";
 import "../i18n";
+import  { generatePDF } from "../../components/PDFFile"
+import {emptyValues, enValues, esValues} from "../pages/initValues.js"
 
-const initValues = {
-  // employeeName: '',
-  // workingTitle: '',
-  // personalNumber: '',
-  // siteLocation: '',
-  // supervisorName: '',
-  // supTelephone: '',
-  // supEmail: '',
-  // pleaseDescribe: '',
-  // describeTheWork: '',
-  // indicateWhichPart: '',
-  // toAvoid: '',
-  // safetyRuleViolated: '',
-  employeeName: "Jacob Athias",
-  workingTitle: "EHS - Coordinator",
-  personalNumber: "4078790195",
-  siteLocation: "EHS Office - Venice",
-  supervisorName: "K.Kauffman",
-  supTelephone: "42312356",
-  supEmail: "kk@pgt.com",
-  pleaseDescribe: "I was walking and I tripped and fell",
-  describeTheWork: "Running inside the office",
-  indicateWhichPart: " Left buttocks",
-  toAvoid: "I won't run anymore inside the office",
-  safetyRuleViolated: "No rule violated, it's ok to run inside the office",
-  // affirm: "",
-
-  // signature: "",
-
-  // dateSigned: "",
-};
-
-// Cria um objeto values e armazena o objeto com initValues
-const initState = { values: initValues };
-
+const initState = { values: esValues };
 export default function Home () {
 
   //Hooks
@@ -68,20 +32,16 @@ export default function Home () {
   const [language, setLanguage] =   useState("en");
   const [ehs, setEHS] =             useState('jathias@pgtindustries.com');
 
-  
+
   // Handles
-  const handleEHs = (event) => {
-    setEHS(event.target.value);
-  };
-    const handleLang = (event) => {
-    i18next.changeLanguage(event.target.value);
-    setLanguage(event.target.value);
+  const handleEHs = (event) => {setEHS(event.target.value);};
+  const handleLang = (event) => {i18next.changeLanguage(event.target.value);setLanguage(event.target.value);
   };
     
-    const handleChange = ({ target }) =>setState((prev) => ({...prev,values: { ...prev.values, [target.name]: target.value },}));
-    const onBlur =       ({ target }) => setTouched((prev) => ({ ...prev, [target.name]: true }));
-    const handleTime =   (newValue) =>   {setTimeValue(newValue);};
-    const handleDate =   (newValue) =>   {setDateValue(newValue);};
+    const handleChange = ({ target }) =>  setState((prev) => ({...prev,values: { ...prev.values, [target.name]: target.value },}));
+    const onBlur       = ({ target }) =>  setTouched((prev) => ({ ...prev, [target.name]: true }));
+    const handleTime   =  (newValue)  => {setTimeValue(newValue);};
+    const handleDate   =  (newValue)  => {setDateValue(newValue);};
 
   //Busines Rules
   const onSubmit = async () => {setState((prev) => ({ ...prev, isLoading: true }));    
@@ -90,7 +50,8 @@ export default function Home () {
       const new_values = {...values,
         dateOfIncident: dateValue.format("MM-DD-YYYY"),
         timeOfIncident: timeValue.format("HH:mm A"),
-        to: ehs
+        to: ehs,
+        Translation: await Translate(language, makeLongString())
       };
       // console.log(new_values);
       await sendContactForm(new_values);
@@ -104,25 +65,36 @@ export default function Home () {
       }));
     }
   };
-
-  const { values, isLoading, error } = state;
   
+  const { values, isLoading, error } = state;
+
+  // CONVERT AVERY ATRIBUTE INTO ONE STRING FOR TRANSLATION
+  function makeLongString(){ 
+    return (Object.values(initValues).join(' || '));} 
+  let fil;
   return (
-    //  <TitleT>{Instructions}</TitleT>
-    
     <Container>
   
       {/*  ######################################### HEADER */}
-      <Grid container spacing={1}>
+      <Grid container spacing={3}>
+
         <Grid container justifyContent={"space-between"}>
+          <Grid item md={6} sm={12} marginTop={2}>
+        <Button onClick={()=>(fil = generatePDF())}>PDF to file</Button>
+        </Grid>
           <Grid item md={6} sm={12} marginTop={2}>
             <LoadingButton
               variant="contained"
               endIcon={<SendIcon />}
-              onClick={(e)=>(Translate(language,"en"))}
+              onClick={(e)=>(Translate(language, makeLongString()))}
             >
               Translate
             </LoadingButton>
+          </Grid>
+          <Grid item md={6} sm={12} marginTop={2}>
+          </Grid>
+
+          <Grid item md={6} sm={12} marginTop={2}>
           </Grid>
 
           <Grid item md={6}>
@@ -131,6 +103,13 @@ export default function Home () {
               value={language}
             ></LanguageSelect>
           </Grid>
+        </Grid>
+
+        <Grid item md={12}>
+        {/* <div className="PDF-Viewer">
+          <PdfComp document = {'document.pdf'}> </PdfComp>
+        </div> */}
+
         </Grid>
 
         <Grid item md={12}>
@@ -146,6 +125,7 @@ export default function Home () {
 
           <TextField
             type="text"
+            inputMode="text"
             label={t("EmployeeName")}
             required
             fullWidth
@@ -173,7 +153,9 @@ export default function Home () {
 
         <Grid item md={4} sm={4}>
           <TextField
-            type="phone"
+            type="tel"
+            inputMode="tel"
+            inputProps={{ inputMode: 'tel'}}
             label={t("PersonalNumber")}
             fullWidth
             name="personalNumber"
@@ -182,6 +164,7 @@ export default function Home () {
             onBlur={onBlur}
           ></TextField>
         </Grid>
+        {/* <PdfComp></PdfComp> */}
 
         <Grid item md={4} sm={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -236,7 +219,7 @@ export default function Home () {
 
         <Grid item md={4} sm={4}>
           <TextField
-            type="phone"
+            type="tel"
             label={t("SupTelephone")}
             required
             fullWidth
@@ -251,6 +234,7 @@ export default function Home () {
         <Grid item md={4} sm={4}>
           <TextField
             type="email"
+            inputMode="email"
             label={t("SupEmail")}
             fullWidth
             name="supEmail"
@@ -381,14 +365,11 @@ export default function Home () {
           <LabelT>{DocumentUncontrolled}</LabelT>
         </Grid> */}
 
-        <Grid container marginTop={2}>
-          
           <Grid item md={6} sm={12}>
             <SelectEHS value={ehs} onChange={handleEHs}></SelectEHS>
           </Grid>
-
-          <Grid item md={6} sm={12}>
-            <LoadingButton
+        <Grid item md={6} sm={12} >          
+            <LoadingButton size="large"
               variant="contained"
               disabled={!values.name && !values.workingTitle}
               endIcon={<SendIcon />}
@@ -396,8 +377,7 @@ export default function Home () {
               loading={isLoading}
             >
               Send
-            </LoadingButton>
-          </Grid>
+            </LoadingButton>         
         </Grid>
 
       </Grid>

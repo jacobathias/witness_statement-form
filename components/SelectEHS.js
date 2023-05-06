@@ -44,7 +44,7 @@ export default function SelectEHS({ onChange, value }) {
   ];
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 250 }}>
+    <FormControl sx={{ m: 0, minWidth: 250 }}>
       {" "}
       <InputLabel>Choose EHS agent</InputLabel>
       <Select

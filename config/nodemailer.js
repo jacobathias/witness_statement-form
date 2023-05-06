@@ -13,5 +13,11 @@ export const transporter = nodemailer.createTransport({
 export const mailOptions = {
 
     from :email,
-    to: email
+    to: email,
+    // attachments: [
+    //     {
+    //       filename: 'Witness-Statement.pdf',
+    //       content: pdf
+    //     }
+    //   ]
 }
