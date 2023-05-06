@@ -72,8 +72,8 @@ export default function Home (){
         dateOfIncident: dateValue.format("MM-DD-YYYY"),
         timeOfIncident: timeValue.format("HH:mm A"),
         to: ehs,
-        attachment: generatePDF(),
-        Translation: await Translate(language, makeLongString())
+        // attachment: generatePDF(),
+        // Translation: await Translate(language, makeLongString())
       };
       await sendContactForm(new_values);
       setTouched({});
@@ -84,12 +84,9 @@ export default function Home (){
 
   // CONVERT AVERY ATRIBUTE INTO ONE STRING FOR TRANSLATION
   function makeLongString(){ return (Object.values(values).join(' || '));} 
-  
-  let fil;
 
   return (
     
-<Suspense>
     
     <Container>
   
@@ -385,7 +382,6 @@ export default function Home (){
       </Grid>
     </Container>
 
-    </Suspense>
     );
 }
 

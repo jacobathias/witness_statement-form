@@ -22,10 +22,7 @@ import {
   safetyRuleViolated,
 } from "../../../Languages/English";
 import { transporter, mailOptions } from "../../../config/nodemailer";
-// import i18next from "i18next";
-import i18next from "../../i18n";
-import { htmlMini } from "../minifiedHtml";
-import { generatePDF } from "../../../components/PDFFile";
+
 
 const WITNESS_FIELDS = {
   employeeName: EmployeeName,
@@ -35,7 +32,7 @@ const WITNESS_FIELDS = {
   supervisorName: SupervisorName,
   supTelephone: SupTelephone,
   supEmail: SupEmail,
-  pleaseDescribe: PleaseDescribe,
+  pleaseDescribe: PleaseDescribe, 
   describeTheWork: DescribeTheWork,
   indicateWhichPart: IndicateWhichPart,
   toAvoid: ToAvoid,
@@ -85,13 +82,13 @@ const handler = async (req, res) => {
     const newMailOption = {
       ...mailOptions,
       to: body.to,
-      attachments: [
-        {
-          filename: 'Witness-Statement.pdf',
-          content: fil,
-          contentType: body.attachment
-        }
-      ]
+      // attachments: [
+      //   {
+      //     filename: 'Witness-Statement.pdf',
+      //     content: fil,
+      //     contentType: body.attachment
+      //   }
+      // ]
     };
     await transporter.sendMail({
       ...newMailOption,
@@ -104,7 +101,7 @@ const handler = async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
 
-  res.status(400).json({ message: "Bad Request" });
+  res.status(200).json({ message: "Sucesso" });
 };
 
 export default handler;

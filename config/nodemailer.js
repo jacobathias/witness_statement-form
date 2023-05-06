@@ -14,11 +14,11 @@ export const mailOptions = {
 
     from :email,
     to: email,
-    attachments: [
-        {
-          filename: 'Witness-Statement.pdf',
-          content: 'pdf',
-          contentType: 'application/pdf'
-        }
-      ]
+    // attachments: [
+    //     {
+    //       filename: 'Witness-Statement.pdf',
+    //       content: 'pdf',
+    //       contentType: 'application/pdf'
+    //     }
+    //   ]
 }
