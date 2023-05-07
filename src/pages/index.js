@@ -1,6 +1,6 @@
 
 import React, { useState, useRef,useEffect } from "react";
-import {Container,Grid,TextField,Button,Card,Divider} from "@mui/material";
+import {Container,Grid,TextField,Button,Card,Divider, Box} from "@mui/material";
 
 import TitleT from "../../components/TitleT";
 import LabelT from "../../components/LabelT";
@@ -130,24 +130,20 @@ export default function Home (){
 
   return (
     
-    
+    <Box>    
     <Container>
   
       {/*  ######################################################################################################### HEADER */}
-      <Grid container spacing={3}>
-
-        <Grid container justifyContent={"space-between"}>
-        <Grid item md={6} ></Grid>
-
-          <Grid item md={6} marginTop={5}>
+      <Grid container spacing={3}  >
+          <Grid item md={6} xs={12}>
             <LanguageSelect
               onChange={handleLang}
               value={language}
             ></LanguageSelect>
           </Grid>
-        </Grid>
+       
 
-        <Grid item md={12}>
+        <Grid item md={12} xs={12} sm={12}>
           <TitleT>{t("Instructions")}</TitleT>
           <LabelT>{t("PleaseState")}</LabelT>
           <TitleT>{t("WitnessEmployeeData")}</TitleT>
@@ -155,9 +151,8 @@ export default function Home (){
 
         {/*  ######################################### Witness Employee Data */}
 
-        <Grid item md={4} sm={4}>
+        <Grid item md={4} sm={6} xs={12}>
           {/* <LabelT>{EmployeeName}</LabelT> */}
-
           <TextField
             type="text"
             inputMode="text"
@@ -172,7 +167,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={4} sm={4}>
+        <Grid item md={4} sm={6} xs={12}>
           <TextField
             type="input"
             label={t("WorkingTitle")}
@@ -185,7 +180,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={4} sm={4}>
+        <Grid item md={4} xs={12}>
           <TextField
             type="tel"
             inputMode="tel"
@@ -200,7 +195,7 @@ export default function Home (){
         </Grid>
         {/* <PdfComp></PdfComp> */}
 
-        <Grid item md={4} sm={4}>
+        <Grid item md={4} xs={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               label={t("DateOfIncident")}
@@ -212,7 +207,7 @@ export default function Home (){
           </LocalizationProvider>
         </Grid>
 
-        <Grid item md={4} sm={4}>
+        <Grid item md={4} xs={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <TimePicker
               // components={{ OpenPickerIcon: AccessTimeIcon }}
@@ -224,7 +219,7 @@ export default function Home (){
           </LocalizationProvider>
         </Grid>
 
-        <Grid item md={12} sm={12}>
+        <Grid item md={12} sm={12} xs={12}>
           <TextField
             type="text"
             label={t("SiteLocation")}
@@ -237,7 +232,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={4} sm={4}>
+        <Grid item md={4} sm={6} xs={12}>
           <TextField
             type="text"
             label={t("SupervisorName")}
@@ -250,7 +245,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={4} sm={4}>
+        <Grid item md={4} sm={6} xs={12}>
           <TextField
             type="tel"
             label={t("SupTelephone")}
@@ -263,7 +258,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={4} sm={4}>
+        <Grid item md={4} xs={12}>
           <TextField
             type="email"
             inputMode="email"
@@ -277,11 +272,11 @@ export default function Home (){
         </Grid>
 
         {/*  ######################################### Incident Description */}
-        <Grid item md={12} sm={12}>
+        <Grid item md={12} xs={12}>
           <TitleT>{t("IncidentDescription")}</TitleT>
         </Grid>
 
-        <Grid item md={12} sm={12}>
+        <Grid item md={12} xs={12}>
           <LabelT>{t("PleaseDescribe")+' *'}</LabelT>
           <TextField
             type="text"
@@ -295,7 +290,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={12} sm={12}>
+        <Grid item md={12} xs={12}>
           <LabelT>{t("DescribeTheWork")+' *'}</LabelT>
           <TextField
             type="text"
@@ -309,7 +304,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={12} sm={12}>
+        <Grid item md={12} xs={12}>
           <LabelT>{t("IndicateWhichPart")+' *'}</LabelT>
           <TextField
             type="text"
@@ -323,7 +318,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={12} sm={12}>
+        <Grid item md={12} xs={12}>
           <LabelT>{t("ToAvoid")+' *'}</LabelT>
           <TextField
             type="text"
@@ -338,7 +333,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={12} sm={12}>
+        <Grid item md={12} xs={12}>
           <LabelT>{t("SafetyRuleViolated")+' *'}</LabelT>
           <TextField
             type="text"
@@ -352,53 +347,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        {/* <Grid item md={12} sm={12}>
-          <TitleT>{Affirm}</TitleT>
-        </Grid> */}
-
-        {/* <Grid item md={12} sm={12}>
-          <LabelT>{Affirmation}</LabelT>
-          <InputField></InputField>
-        </Grid> */}
-
-        {/* <Grid item md={6} sm={6}>
-          <LabelT>{Signature}</LabelT>
-          <InputField></InputField>
-        </Grid> */}
-
-        {/* <Grid item md={6} sm={6}>
-          <DateSelect label={DateSigned} />
-        </Grid> */}
-
-        {/* <Grid item md={12} sm={12}>
-          <TitleT>{Revision}</TitleT>
-        </Grid>
-
-        <Grid item md={3} sm={3}>
-          <LabelT>Rev</LabelT>
-          <LabelT>A</LabelT>
-        </Grid>
-
-        <Grid item md={3} sm={3}>
-          <LabelT>{Description}</LabelT>
-          <LabelT>{InitialRelease}</LabelT>
-        </Grid>
-
-        <Grid item md={3} sm={3}>
-          <LabelT>{By}</LabelT>
-          <LabelT>Angela Valentine</LabelT>
-        </Grid>
-
-        <Grid item md={2} sm={3}>
-          <LabelT>{RevisionDate}</LabelT>
-          <LabelT>05-18-2020</LabelT>
-        </Grid>
-
-        <Grid item md={12} sm={12}>
-          <LabelT>{DocumentUncontrolled}</LabelT>
-        </Grid> */}
-
-        <Grid item >
+        <Grid item md={12} xs={12}>
           <LabelT>{t("Signature")+' *'}</LabelT>
           <Card elevation={5}>
             <SignatureCanvas 
@@ -411,23 +360,25 @@ export default function Home (){
                   height: 200,
                   className: 'sigCanvas'}} />,
           </Card>
-          <Grid container justifyContent={'flex-end'}>
-            <Grid item md={9}></Grid>
-            <Grid item md={3}>
+          
+            <Grid item md={9} xs={12}></Grid>
+            <Grid item md={3} xs={12}>
               <Button onClick={clear}>{t("ClearSignature")}</Button>
             </Grid>
-          </Grid>
+          
         </Grid>
 
-        <Grid item md={12} sm={12}><Divider></Divider></Grid>
+        <Grid item md={12} xs={12}><Divider></Divider></Grid>
         
-          <Grid item md={6} sm={6}>
+          <Grid item md={6} sm={6} xs={12}>
             <SelectEHS value={ehs} onChange={handleEHs}></SelectEHS>
           </Grid>
 
-          <Grid item md={6} sm={6} marginBottom={15}>          
+          <Grid item md={6} sm={6} xs={12} marginBottom={15}>          
             <LoadingButton size="large"
               variant="contained"
+              
+
               // disabled={!isSigned}
               disabled={!canSubmit}
               // disabled={!values.name && !values.workingTitle && isSigned}
@@ -440,10 +391,9 @@ export default function Home (){
             </LoadingButton>         
           
         </Grid>
-        {/* <img src={theSignature} /> */}
       </Grid>
     </Container>
-
+    </Box>
     );
 }
 
