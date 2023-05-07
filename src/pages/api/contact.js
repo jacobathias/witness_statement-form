@@ -21,7 +21,7 @@ import {
   WorkingTitle,
   safetyRuleViolated,
 } from "../../../Languages/English";
-import {htmlLayout} from "../email";
+import {htmlLayout} from "../../email";
 import { transporter, mailOptions } from "../../../config/nodemailer";
 import jsPDF from 'jspdf';
 import puppeteer from 'puppeteer';
