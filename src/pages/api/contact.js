@@ -55,7 +55,7 @@ const WITNESS_FIELDS = {
 
 const generatePdfFromHtml = async (html) => {
   console.log('Generating PDF from HTML')
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({headless: "new"});
   const page = await browser.newPage();
 
   // Define o conteúdo da página com o HTML recebido
