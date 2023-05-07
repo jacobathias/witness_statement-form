@@ -129,15 +129,17 @@ export const htmlLayout = (data) => `<head>
       <p>${data.toAvoid}</p>
     </div>
     <div class="form-group">
-      <label>To your knowledge, was a safety rule violated?</label>
+    <label>To your knowledge, was a safety rule violated?</label>
+    
       <p>${data.safetyRuleViolated}</p>
+      <br>
+      <br>
+      <br>
+      <p>I, ${data.employeeName}, affirm that the facts contained in this statement are true and correct to be best of my belief.</p>
       
       </div>
       
       </div>
-      <p>I, ${
-        data.employeeName
-      }, affirm that the facts contained in this statement are true and correct to be best of my belief.</p>
       ${data.Signature}
       ${tranlatedPart(data)}
       </body>`;

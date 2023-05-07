@@ -50,7 +50,7 @@ export default function SelectEHS({ onChange, value }) {
       <Select
         value={value}
         onChange={onChange}
-        label="Choose EHS agent"
+        label="Send to EHS agent"
         fullWidth
       >
         {EHSagents.map((i) => (

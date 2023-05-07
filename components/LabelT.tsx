@@ -4,7 +4,7 @@ interface ILabelT {
 }
 export default function LabelT({ children="" }:ILabelT) {
   return (
-    <Box marginBottom={1} marginTop={1}>
+    <Box marginBottom={0} marginTop={0}>
       <Typography fontWeight={500} variant="subtitle1">
         {children.toUpperCase()}
       </Typography>

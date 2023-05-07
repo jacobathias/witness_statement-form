@@ -20,13 +20,15 @@
   "SafetyRuleViolated": "To your knowledge was a safety rule violated?",
   "Affirm": "Affirmation",
   "Affirmation": "“I  affirm that the facts contained in this statement are true and correct to be best of my belief.”",
-  "Signature": "Employee signature",
+  "Signature": "Employee Signature",
   "DateSigned": "Date Signed",
   "Revision": "1. REVISION HISTORY",
   "Description": "Description",
   "By": "By",
   "RevisionDate": "Date",
   "InitialRelease": "Initial release",
-  "DocumentUncontrolled": "THIS DOCUMENT IS UNCONTROLLED WHEN PRINTED UNLESS NOTED OTHERWIS"
+  "DocumentUncontrolled": "THIS DOCUMENT IS UNCONTROLLED WHEN PRINTED UNLESS NOTED OTHERWIS",
+  "ClearSignature" : "Clear signature",
+  "SubmitStatement": "Submit Statement"
 }
 

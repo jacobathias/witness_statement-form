@@ -1,6 +1,6 @@
 
-import React, { useState, Suspense, useEffect } from "react";
-import {Container,Grid,TextField,Button} from "@mui/material";
+import React, { useState, useRef,useEffect } from "react";
+import {Container,Grid,TextField,Button,Card,Divider} from "@mui/material";
 
 import TitleT from "../../components/TitleT";
 import LabelT from "../../components/LabelT";
@@ -23,8 +23,9 @@ import {emptyValues, enValues, esValues} from "./initValues.js"
 import { useTranslation, i18n } from 'next-i18next'
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from 'next/router'
+import SignatureCanvas from 'react-signature-canvas'
 
-const initState = { values: esValues };
+const initState = { values: emptyValues };
 
 export default function Home (){
   //Hooks
@@ -36,6 +37,11 @@ export default function Home (){
   const [dateValue, setDateValue] = useState(dayjs());
   const [language, setLanguage] =   useState("en");
   const [ehs, setEHS] =             useState('jathias@pgtindustries.com');
+  const [isSigned, setIsSigned] =   useState(false);
+  const [theSignature, setSignature] =   useState('');
+  const [canSubmit, setCanSubmit] = useState(false)
+
+  let sigPad = useRef({});
   
   const { values, isLoading, error } = state;
   const router = useRouter()
@@ -54,32 +60,70 @@ export default function Home (){
     setLanguage(newLocale);
   };
 
-   // useEffect(()=> {
-      // i18next.changeLanguage(language);
-  // })
+   useEffect(()=> {
+    console.log('Use Effect')
+      allowSubmit()
+  })
 
     
-    const handleChange = ({ target }) =>  setState((prev) =>   ({ ...prev, values:{ ...prev.values, [target.name]: target.value },}));
+    const handleChange = ({ target }) =>  setState((prev) =>   ({ ...prev, values:{ ...prev.values, [target.name]: target.value },[target.name]: true}));
     const onBlur       = ({ target }) =>  setTouched((prev) => ({ ...prev, [target.name]: true }));
     const handleTime   =  (newValue)  => {setTimeValue(newValue);};
     const handleDate   =  (newValue)  => {setDateValue(newValue);};
+    const handleSigned =  (target)    => {setIsSigned(target);}
+
+
+
+    
+    let Signature;
 
   //Busines Rules
   const onSubmit = async () => {setState((prev) => ({ ...prev, isLoading: true }));    
   try {
+    var tObj;
+    if (language !='en') {
+      var str = await Translate(language, makeLongString())
+      const [employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, describeTheWork, indicateWhichPart, toAvoid, safetyRuleViolated] = str.split(" || ");
+       tObj = {employeeName,workingTitle,personalNumber,siteLocation,supervisorName,supTelephone,supEmail,pleaseDescribe,describeTheWork,indicateWhichPart,toAvoid,safetyRuleViolated};
+    }
       //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
       const new_values = {...values,
         dateOfIncident: dateValue.format("MM-DD-YYYY"),
         timeOfIncident: timeValue.format("HH:mm A"),
-        to: ehs,
-        Translation: await Translate(language, makeLongString())
+        to: [ehs, values.supEmail],
+        Translation:  tObj == undefined ? undefined : tObj,
+        Signature: `<img src=${theSignature} />`
       };
+      // debugger;
       await sendContactForm(new_values);
       setTouched({});
       setState(initState);
     } catch (error) {setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
   };
   
+  function clear(){
+    sigPad.current.clear()
+    setIsSigned(false)
+  }
+  function saveSignature(){
+    console.log('Signature saved')
+    Signature = sigPad.current.toDataURL()
+    setSignature(sigPad.current.toDataURL())
+    setIsSigned(true)
+  }
+
+  function allowSubmit(){
+    setCanSubmit(false) 
+    if (!values.employeeName) return 
+    if (!values.pleaseDescribe) return 
+    if (!values.describeTheWork) return 
+    if (!values.indicateWhichPart) return 
+    if (!values.toAvoid) return 
+    if (!values.safetyRuleViolated) return 
+    if (isSigned== false) return
+    console.log('Validado') 
+    setCanSubmit(true) 
+  }
 
   // CONVERT AVERY ATRIBUTE INTO ONE STRING FOR TRANSLATION
   function makeLongString(){ return (Object.values(values).join(' || '));} 
@@ -93,15 +137,9 @@ export default function Home (){
       <Grid container spacing={3}>
 
         <Grid container justifyContent={"space-between"}>
-          <Grid item md={6} sm={12} marginTop={2}>
-            <Button 
-            variant="contained" 
-            onClick={()=>(generatePDF())}
-            >PDF to file
-            </Button>
-          </Grid>
+        <Grid item md={6} ></Grid>
 
-          <Grid item md={6}>
+          <Grid item md={6} marginTop={5}>
             <LanguageSelect
               onChange={handleLang}
               value={language}
@@ -127,7 +165,7 @@ export default function Home (){
             required
             fullWidth
             name="employeeName"
-            error={touched.name && !values.employeeName}
+            error={touched.employeeName && !values.employeeName}
             value={values.employeeName}
             onChange={handleChange}
             onBlur={onBlur}
@@ -138,10 +176,9 @@ export default function Home (){
           <TextField
             type="input"
             label={t("WorkingTitle")}
-            required
             fullWidth
             name="workingTitle"
-            error={touched.workingTitle && !values.workingTitle}
+            // error={touched.workingTitle && !values.workingTitle}
             value={values.workingTitle}
             onChange={handleChange}
             onBlur={onBlur}
@@ -204,10 +241,9 @@ export default function Home (){
           <TextField
             type="text"
             label={t("SupervisorName")}
-            required
             fullWidth
             name="supervisorName"
-            error={touched.supervisorName && !values.supervisorName}
+            // error={touched.supervisorName && !values.supervisorName}
             value={values.supervisorName}
             onChange={handleChange}
             onBlur={onBlur}
@@ -218,10 +254,9 @@ export default function Home (){
           <TextField
             type="tel"
             label={t("SupTelephone")}
-            required
             fullWidth
             name="supTelephone"
-            error={touched.supTelephone && !values.supTelephone}
+            // error={touched.supTelephone && !values.supTelephone}
             value={values.supTelephone}
             onChange={handleChange}
             onBlur={onBlur}
@@ -247,7 +282,7 @@ export default function Home (){
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{t("PleaseDescribe")}</LabelT>
+          <LabelT>{t("PleaseDescribe")+' *'}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -261,7 +296,7 @@ export default function Home (){
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{t("DescribeTheWork")}</LabelT>
+          <LabelT>{t("DescribeTheWork")+' *'}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -275,7 +310,7 @@ export default function Home (){
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{t("IndicateWhichPart")}</LabelT>
+          <LabelT>{t("IndicateWhichPart")+' *'}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -289,7 +324,7 @@ export default function Home (){
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{t("ToAvoid")}</LabelT>
+          <LabelT>{t("ToAvoid")+' *'}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -304,7 +339,7 @@ export default function Home (){
         </Grid>
 
         <Grid item md={12} sm={12}>
-          <LabelT>{t("SafetyRuleViolated")}</LabelT>
+          <LabelT>{t("SafetyRuleViolated")+' *'}</LabelT>
           <TextField
             type="text"
             fullWidth
@@ -363,21 +398,49 @@ export default function Home (){
           <LabelT>{DocumentUncontrolled}</LabelT>
         </Grid> */}
 
-          <Grid item md={6} sm={12}>
+        <Grid item >
+          <LabelT>{t("Signature")+' *'}</LabelT>
+          <Card elevation={5}>
+            <SignatureCanvas 
+              penColor='blue' 
+              backgroundColor ='white' 
+              onEnd={saveSignature}
+              ref = {sigPad}
+                canvasProps={{
+                  width: 750, 
+                  height: 200,
+                  className: 'sigCanvas'}} />,
+          </Card>
+          <Grid container justifyContent={'flex-end'}>
+            <Grid item md={9}></Grid>
+            <Grid item md={3}>
+              <Button onClick={clear}>{t("ClearSignature")}</Button>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid item md={12} sm={12}><Divider></Divider></Grid>
+        
+          <Grid item md={6} sm={6}>
             <SelectEHS value={ehs} onChange={handleEHs}></SelectEHS>
           </Grid>
-        <Grid item md={6} sm={12} >          
+
+          <Grid item md={6} sm={6} marginBottom={15}>          
             <LoadingButton size="large"
               variant="contained"
-              disabled={!values.name && !values.workingTitle}
+              // disabled={!isSigned}
+              disabled={!canSubmit}
+              // disabled={!values.name && !values.workingTitle && isSigned}
+              // disabled={!Signature}
               endIcon={<SendIcon />}
               onClick={onSubmit}
               loading={isLoading}
             >
-              Send
+              {t("SubmitStatement")}
             </LoadingButton>         
+          
         </Grid>
-
+        {/* <img src={theSignature} /> */}
       </Grid>
     </Container>
 
@@ -394,5 +457,3 @@ export const getStaticProps  = async ({ locale }) => {
     },
   };
 };
-
-// Error: next-i18next was unable to find a user config at C:\Users\jacob01\Documents\GitHub\Witness Statement\witness_statement-form\next-i18next.config.js

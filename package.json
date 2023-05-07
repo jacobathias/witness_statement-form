@@ -40,6 +40,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-i18next": "^12.2.2",
+    "react-signature-canvas": "^1.0.6",
     "styled-components": "^5.3.10",
     "webpack-hot-middleware": "^2.25.3"
   },

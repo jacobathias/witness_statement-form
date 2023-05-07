@@ -6,7 +6,7 @@ interface ITitleT{
 
 export default function TitleT({children}:ITitleT) {
   return (
-    <Box marginBottom={0} marginTop={4}>
+    <Box marginBottom={0} marginTop={0}>
       <Typography variant="h5" component="h5" fontWeight={550}>
         {children}
       </Typography>

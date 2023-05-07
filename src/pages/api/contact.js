@@ -21,6 +21,7 @@ import {
   WorkingTitle,
   safetyRuleViolated,
 } from "../../../Languages/English";
+import {htmlLayout} from "../email";
 import { transporter, mailOptions } from "../../../config/nodemailer";
 import jsPDF from 'jspdf';
 import puppeteer from 'puppeteer';
@@ -53,6 +54,7 @@ const WITNESS_FIELDS = {
 
 
 const generatePdfFromHtml = async (html) => {
+  console.log('Generating PDF from HTML')
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -63,10 +65,10 @@ const generatePdfFromHtml = async (html) => {
   const pdfStream = await page.pdf({ 
     format: 'A4',
     border: {
-      top: '2cm',
-      right: '2cm',
-      bottom: '2cm',
-      left: '2cm',
+      top: '50cm',
+      right: '50cm',
+      bottom: '50cm',
+      left: '50cm',
     },
   });
 
@@ -80,25 +82,33 @@ const generatePdfFromHtml = async (html) => {
   return pdfReadableStream;
 };
 
-const generateEmailContent = (data) => {
-  // CAMPOS
-  const stringData = Object.entries(data).reduce(
-    (str, [key, val]) => (str += `${WITNESS_FIELDS[key]}: ${val}} `),
-    ""
-  );
-  console.log(stringData);
-  // VALORES
-  const htmlData = Object.entries(data).reduce((str, [key, val]) => {
-    return (str += `<h3 >${WITNESS_FIELDS[key]}</h3><p>${val}</p>`);
-  }, "");
+// const generateEmailContent = (data) => {
+//   // CAMPOS
+//   const stringData = Object.entries(data).reduce(
+//     (str, [key, val]) => (str += `${WITNESS_FIELDS[key]}: ${val}} `),
+//     ""
+//   );
+//   console.log(stringData);
+//   // VALORES
+//   const htmlData = Object.entries(data).reduce((str, [key, val]) => {
+//     return (str += `<h3 >${WITNESS_FIELDS[key]}</h3>${val}`);
+//   }, "");
 
-  return {
-    text: stringData,
-    html: `<div class="form-container">${htmlData}</div>`,
-  };
+//   return {
+//     text: stringData,
+//     html: `<div class="form-container">${htmlData}</div>`,
+//   };
+// };
+const generateEmailContent = (data) => {
+  console.log('Generating Email Content')
+return {
+  text: 'stringData',
+  html: htmlLayout(data)
+      }
 };
 
 const handler = async (req, res) => {
+  console.log('Getting response from POST')
   let body = "";
   if (req.method === "POST") {
     body = req.body;
@@ -125,7 +135,7 @@ const handler = async (req, res) => {
         to: body.to,
         attachments: [
           {
-            filename: 'teste.pdf',
+            filename: `Incident Statement - ${body.employeeName}.pdf`,
             content,
             encoding: 'base64',
           },

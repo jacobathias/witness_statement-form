@@ -19,7 +19,7 @@ export default function LanguageSelect({ onChange, value }) {
       <Select value={value} onChange={onChange} label="Select Language">
         <MenuItem value="en" key={'en'} >
           <img src="https://img.icons8.com/color/48/null/usa-circular.png" />
-          Englsih
+          English
         </MenuItem>
 
         <MenuItem value="es" key={'es'}>

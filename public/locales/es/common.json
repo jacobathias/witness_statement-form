@@ -27,5 +27,7 @@
   "By": "Por",
   "RevisionDate": "Fecha",
   "InitialRelease": "Lanzamiento inicial",
-  "DocumentUncontrolled": "ESTE DOCUMENTO NO ESTÁ CONTROLADO CUANDO SE IMPRIME A MENOS QUE SE INDIQUE LO CONTRARIO"
+  "DocumentUncontrolled": "ESTE DOCUMENTO NO ESTÁ CONTROLADO CUANDO SE IMPRIME A MENOS QUE SE INDIQUE LO CONTRARIO",
+  "ClearSignature" : "Limpiar firma",
+  "SubmitStatement": "Enviar declaración"
 }
