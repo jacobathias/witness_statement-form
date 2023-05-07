@@ -7,7 +7,7 @@ export const htmlLayout = (data) => `<head>
              flex-direction: column;
              align-items: center;
              height: 100vh;
-             background-color: rgb(226, 226, 226);
+             
            }
      
            h2 {
