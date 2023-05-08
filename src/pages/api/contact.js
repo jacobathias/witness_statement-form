@@ -110,6 +110,7 @@ return {
 const handler = async (req, res) => {
   console.log('Getting response from POST')
   let body = "";
+  await req;
   if (req.method === "POST") {
     body = req.body;
     console.log(body.name);

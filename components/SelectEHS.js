@@ -52,7 +52,7 @@ export default function SelectEHS({ onChange, value }) {
         onChange={onChange}
         label="Send to EHS agent"
         fullWidth
-        minWidth={100}
+        
       >
         {EHSagents.map((i) => (
           <MenuItem value={i.email} key={i.name}>{i.name}</MenuItem>

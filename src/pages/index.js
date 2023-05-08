@@ -15,17 +15,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
 import { Translate } from "../Translate";
 import dayjs from "dayjs";
-import  { generatePDF } from "../../components/PDFFile"
 import {emptyValues, enValues, esValues} from "../initValues"
-// import { useTranslation } from "react-i18next";
-// import i18next from "../i18n";
-// import "../i18n";
 import { useTranslation, i18n } from 'next-i18next'
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from 'next/router'
 import SignatureCanvas from 'react-signature-canvas'
 
-const initState = { values: emptyValues };
+const initState = { values: enValues };
 
 export default function Home (){
   //Hooks
