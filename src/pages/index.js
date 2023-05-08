@@ -57,7 +57,6 @@ export default function Home (){
   };
 
    useEffect(()=> {
-    console.log('Use Effect')
       allowSubmit()
   })
 
@@ -117,7 +116,6 @@ export default function Home (){
     if (!values.toAvoid) return 
     if (!values.safetyRuleViolated) return 
     if (isSigned== false) return
-    console.log('Validado') 
     setCanSubmit(true) 
   }
 

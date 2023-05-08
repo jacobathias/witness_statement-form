@@ -110,27 +110,21 @@ return {
 const handler = async (req, res) => {
   console.log('Getting response from POST')
   let body = "";
-  await req;
+
   if (req.method === "POST") {
     body = req.body;
-    console.log(body.name);
-    if (!body.employeeName) {
-      return res.status(400).json({ message: "Bad requesto" });
-    }
-
-
+    if (!body.employeeName) {return res.status(400).json({ message: "Bad requesto" });}
+    
+    
     // const doc = new jsPDF();
     // doc.text('TESTE', 20, 20);
     // var pdf = (doc.output('datauristring'));
     //var content = pdf.split(';base64,').pop();
-
-
+    
+    
     try {
-
       const emailContent = generateEmailContent(body)
-
       const content = await generatePdfFromHtml(emailContent.html);
-
       const newMailOption = {
         ...mailOptions,
         to: body.to,
@@ -150,12 +144,11 @@ const handler = async (req, res) => {
       });
       console.log("Email Sent");
     } catch (error) {
-      // console.log(error);
+      console.log(error.message);
       return res.status(400).json({ message: error.message });
     }
-
     res.status(200).json({ message: "Sucesso" });
-  }
+  }   //if (req.method === "POST")
 
   return res.status(400).json({ message: 'Falha na requisição' });
 };
