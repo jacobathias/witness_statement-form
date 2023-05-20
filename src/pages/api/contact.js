@@ -1,4 +1,6 @@
+import sendgrid from "@sendgrid/mail";
 import { useTranslation } from "react-i18next";
+import { Buffer } from 'buffer';
 import {
   Affirm,
   DateOfIncident,
@@ -27,6 +29,9 @@ import jsPDF from 'jspdf';
 import puppeteer from 'puppeteer';
 import { Readable } from 'stream';
 
+import concat from 'concat-stream'
+
+import { Base64Encode } from 'base64-stream'
 const WITNESS_FIELDS = {
   employeeName: EmployeeName,
   workingTitle: WorkingTitle,
@@ -52,6 +57,24 @@ const WITNESS_FIELDS = {
   Translation: "",
 };
 
+const streamToBase64 = (stream) => {
+  
+
+  return new Promise((resolve, reject) => {
+    const base64 = new Base64Encode()
+
+    const cbConcat = (base64) => {
+      resolve(base64)
+    }
+
+    stream
+      .pipe(base64)
+      .pipe(concat(cbConcat))
+      .on('error', (error) => {
+        reject(error)
+      })
+  })
+}
 
 const generatePdfFromHtml = async (html) => {
   console.log('Generating PDF from HTML')
@@ -60,45 +83,29 @@ const generatePdfFromHtml = async (html) => {
 
   // Define o conteúdo da página com o HTML recebido
   await page.setContent(html);
-
-  // Gera o PDF a partir do conteúdo da página
-  const pdfStream = await page.pdf({ 
-    format: 'A4',
-    border: {
-      top: '50cm',
-      right: '50cm',
-      bottom: '50cm',
-      left: '50cm',
-    },
+  await page.waitForFunction(() => {
+    const element = document.querySelector('img');
+    return element !== null;
   });
+  // Gera o PDF a partir do conteúdo da página
+  const pdfStream = await page.pdf({ format: 'A4',border: {top: '50cm',right: '50cm',bottom: '50cm',left: '50cm'}});
 
-  await browser.close();
-
+  // let buffer = new Buffer.from(pdfStream, 'base64')
+  // return buffer.toString('base64')
   // Converte o buffer do PDF para uma stream legível
-  const pdfReadableStream = new Readable();
-  pdfReadableStream.push(pdfStream);
-  pdfReadableStream.push(null);
-
-  return pdfReadableStream;
+  
+  // const pdfReadableStream = new Readable();
+  // pdfReadableStream.push(pdfStream);
+  // pdfReadableStream.push(null);
+  // let stb64 =  pdfReadableStream
+  // let stb64 = await streamToBase64(pdfReadableStream)
+  
+  let stb64 =  pdfStream.toString('base64')
+  await browser.close();
+  return stb64;
 };
 
-// const generateEmailContent = (data) => {
-//   // CAMPOS
-//   const stringData = Object.entries(data).reduce(
-//     (str, [key, val]) => (str += `${WITNESS_FIELDS[key]}: ${val}} `),
-//     ""
-//   );
-//   console.log(stringData);
-//   // VALORES
-//   const htmlData = Object.entries(data).reduce((str, [key, val]) => {
-//     return (str += `<h3 >${WITNESS_FIELDS[key]}</h3>${val}`);
-//   }, "");
 
-//   return {
-//     text: stringData,
-//     html: `<div class="form-container">${htmlData}</div>`,
-//   };
-// };
 const generateEmailContent = (data) => {
   console.log('Generating Email Content')
 return {
@@ -116,41 +123,37 @@ const handler = async (req, res) => {
     if (!body.employeeName) {return res.status(400).json({ message: "Bad requesto" });}
     
     
-    // const doc = new jsPDF();
-    // doc.text('TESTE', 20, 20);
-    // var pdf = (doc.output('datauristring'));
-    //var content = pdf.split(';base64,').pop();
-    
     
     try {
-      const emailContent = generateEmailContent(body)
+      const emailContent = generateEmailContent(body);
       const content = await generatePdfFromHtml(emailContent.html);
-      const newMailOption = {
-        ...mailOptions,
-        to: body.to,
+      sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
+    
+      const msg = {
+        to: 'jacobathias.stm@gmail.com',
+        from: 'jacobathias.stm@gmail.com',
+        subject: `Witness Statement - ${body.employeeName}`,
+        text: 'Hermes Statement',
+        html: emailContent.html,
         attachments: [
           {
+            content: content,
             filename: `Incident Statement - ${body.employeeName}.pdf`,
-            content,
+            type: 'application/pdf',
+            disposition: 'attachment',
             encoding: 'base64',
           },
         ],
- 
       };
-      await transporter.sendMail({
-        ...newMailOption,
-        ...emailContent,
-        subject: `Witness Statement - ${body.employeeName}`,
-      });
-      console.log("Email Sent");
+    
+      await sendgrid.send(msg);
+      console.log('Email sent UHAAA');
+      return res.status(200).json({ message: 'Sucesso' });
     } catch (error) {
-      console.log(error.message);
-      return res.status(400).json({ message: error.message });
+      console.error(error);
+      return res.status(400).json({ message: 'Caramba' + error });
     }
-    res.status(200).json({ message: "Sucesso" });
-  }   //if (req.method === "POST")
-
-  return res.status(400).json({ message: 'Falha na requisição' });
+  } 
 };
 
 export default handler;
