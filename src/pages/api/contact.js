@@ -1,4 +1,5 @@
 import sendgrid from "@sendgrid/mail";
+import chromium from 'chrome-aws-lambda';
 import { useTranslation } from "react-i18next";
 import { Buffer } from 'buffer';
 import {
@@ -78,7 +79,10 @@ const streamToBase64 = (stream) => {
 
 const generatePdfFromHtml = async (html) => {
   console.log('Generating PDF from HTML')
-  const browser = await puppeteer.launch({headless: "new"});
+  const browser = await puppeteer.launch({ 
+    args: chromium.args,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless});
   const page = await browser.newPage();
 
   // Define o conteúdo da página com o HTML recebido
@@ -157,3 +161,5 @@ const handler = async (req, res) => {
 };
 
 export default handler;
+
+
