@@ -12,7 +12,7 @@ import { sendContactForm } from "../../lib/api";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { DatePicker  } from "@mui/x-date-pickers";
 import { Translate } from "../Translate";
 import dayjs from "dayjs";
 import {emptyValues, enValues, esValues} from "../initValues"
@@ -26,24 +26,28 @@ const initState = { values: enValues };
 export default function Home (){
   //Hooks
   const { t } = useTranslation('common');
+  const router = useRouter()
   // function t(x) {return x} 
   const [state, setState] =         useState(initState);
   const [touched, setTouched] =     useState({});
   const [timeValue, setTimeValue] = useState(dayjs());
   const [dateValue, setDateValue] = useState(dayjs());
-  const [language, setLanguage] =   useState("en");
+  const [language, setLanguage] =   useState(router?.locale ?? "en");
   const [ehs, setEHS] =             useState('jathias@pgtindustries.com');
   const [isSigned, setIsSigned] =   useState(false);
   const [theSignature, setSignature] =   useState('');
   const [canSubmit, setCanSubmit] = useState(false)
-
+  
   let sigPad = useRef({});
   
   const { values, isLoading, error } = state;
-  const router = useRouter()
-
+  
+  
   // Handles
-  const handleEHs = (event) =>  {
+
+ 
+
+  const handleEHS = (event) =>  {
     setEHS(event.target.value);
   };
 
@@ -87,7 +91,7 @@ export default function Home (){
         timeOfIncident: timeValue.format("HH:mm A"),
         to: [ehs, values.supEmail],
         Translation:  tObj == undefined ? undefined : tObj,
-        Signature: `<img src=${theSignature} />`
+        Signature: `<img src='${theSignature}'/>`
       };
       // debugger;
       await sendContactForm(new_values);
@@ -135,7 +139,9 @@ export default function Home (){
               value={language}
             ></LanguageSelect>
           </Grid>
-       
+          <Grid item md={6} sm={6} xs={12}>
+            <SelectEHS value={ehs} onChange={handleEHS}></SelectEHS>
+          </Grid>
 
         <Grid item md={12} xs={12} sm={12}>
           <TitleT>{t("Instructions")}</TitleT>
@@ -191,7 +197,7 @@ export default function Home (){
 
         <Grid item md={4} xs={6}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DesktopDatePicker
+            <DatePicker 
               label={t("DateOfIncident")}
               inputFormat="MM/DD/YYYY"
               value={dateValue}
@@ -364,9 +370,7 @@ export default function Home (){
 
         <Grid item md={12} xs={12}><Divider></Divider></Grid>
         
-          <Grid item md={6} sm={6} xs={12}>
-            <SelectEHS value={ehs} onChange={handleEHs}></SelectEHS>
-          </Grid>
+         
 
           <Grid item md={6} sm={6} xs={12} marginBottom={15}>          
             <LoadingButton size="large"
