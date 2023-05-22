@@ -29,6 +29,8 @@
   "InitialRelease": "Initial release",
   "DocumentUncontrolled": "THIS DOCUMENT IS UNCONTROLLED WHEN PRINTED UNLESS NOTED OTHERWIS",
   "ClearSignature" : "Clear signature",
-  "SubmitStatement": "Submit Statement"
+  "SubmitStatement": "Submit Statement",
+  "Yes": "Yes",
+  "No": "No"
 }
 

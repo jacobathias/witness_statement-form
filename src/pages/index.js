@@ -1,6 +1,6 @@
 
 import React, { useState, useRef,useEffect } from "react";
-import {Container,Grid,TextField,Button,Card,Divider, Box} from "@mui/material";
+import {Container,Grid,TextField,Button,Card,Divider, Box, Switch, Collapse} from "@mui/material";
 
 import TitleT from "../../components/TitleT";
 import LabelT from "../../components/LabelT";
@@ -20,8 +20,9 @@ import { useTranslation, i18n } from 'next-i18next'
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from 'next/router'
 import SignatureCanvas from 'react-signature-canvas'
+import InputMask from 'react-input-mask';
 
-const initState = { values: enValues };
+const initState = { values: emptyValues };
 
 export default function Home (){
   //Hooks
@@ -37,6 +38,7 @@ export default function Home (){
   const [isSigned, setIsSigned] =   useState(false);
   const [theSignature, setSignature] =   useState('');
   const [canSubmit, setCanSubmit] = useState(false)
+  const [isSafetyViolated, setIsSafetyViolated] = useState(false)
   
   let sigPad = useRef({});
   
@@ -70,6 +72,7 @@ export default function Home (){
     const handleTime   =  (newValue)  => {setTimeValue(newValue);};
     const handleDate   =  (newValue)  => {setDateValue(newValue);};
     const handleSigned =  (target)    => {setIsSigned(target);}
+    const handleIsSafetyViolated   =  (event)  => {setIsSafetyViolated(event.target.checked);};
 
 
 
@@ -182,15 +185,17 @@ export default function Home (){
 
         <Grid item md={4} xs={12}>
           <TextField
-            type="tel"
-            inputMode="tel"
-            inputProps={{ inputMode: 'tel'}}
+            type="number"
+            
+            
             label={t("PersonalNumber")}
             fullWidth
             name="personalNumber"
             value={values.personalNumber}
             onChange={handleChange}
             onBlur={onBlur}
+            inputMode ='tel' pattern="[0-9]*"
+inputProps={{ inputMode: 'tel' }}
           ></TextField>
         </Grid>
         {/* <PdfComp></PdfComp> */}
@@ -246,16 +251,20 @@ export default function Home (){
         </Grid>
 
         <Grid item md={4} sm={6} xs={12}>
+        
           <TextField
-            type="tel"
+            type="number"
             label={t("SupTelephone")}
             fullWidth
-            name="supTelephone"
-            // error={touched.supTelephone && !values.supTelephone}
+            name ="supTelephone"
+            inputMode ='tel' pattern="[0-9]*" 
+            inputProps={{ inputMode: 'tel' }}            // error={touched.supTelephone && !values.supTelephone}
+            
             value={values.supTelephone}
             onChange={handleChange}
             onBlur={onBlur}
           ></TextField>
+          
         </Grid>
 
         <Grid item md={4} xs={12}>
@@ -333,7 +342,7 @@ export default function Home (){
           ></TextField>
         </Grid>
 
-        <Grid item md={12} xs={12}>
+        {/* <Grid item md={12} xs={12}>
           <LabelT>{t("SafetyRuleViolated")+' *'}</LabelT>
           <TextField
             type="text"
@@ -345,7 +354,33 @@ export default function Home (){
             onChange={handleChange}
             onBlur={onBlur}
           ></TextField>
-        </Grid>
+        </Grid> */}
+        
+          <Grid item md={5} xs={6} ><LabelT>{t("SafetyRuleViolated")+' *'}</LabelT></Grid>
+          
+          <Grid item md={2} xs={6}>
+            <Switch size="medium"
+      checked={isSafetyViolated}
+      onChange={handleIsSafetyViolated}
+      inputProps={{ 'aria-label': 'controlled' }}
+          /> {isSafetyViolated ? t ("Yes"): t("No")}
+          </Grid>
+
+          <Grid item md={12} xs={12}>
+        <Collapse in={isSafetyViolated}>
+              <TextField
+            type="text"
+            fullWidth
+            multiline
+            name="safetyRuleViolated"
+            error={touched.safetyRuleViolated && !values.safetyRuleViolated}
+            value={values.safetyRuleViolated}
+            onChange={handleChange}
+            onBlur={onBlur}
+          ></TextField>
+          </Collapse>
+          </Grid>
+        
 
         <Grid item md={12} xs={12}>
           <LabelT>{t("Signature")+' *'}</LabelT>

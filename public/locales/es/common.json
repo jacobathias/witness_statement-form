@@ -29,5 +29,7 @@
   "InitialRelease": "Lanzamiento inicial",
   "DocumentUncontrolled": "ESTE DOCUMENTO NO ESTÁ CONTROLADO CUANDO SE IMPRIME A MENOS QUE SE INDIQUE LO CONTRARIO",
   "ClearSignature" : "Limpiar firma",
-  "SubmitStatement": "Enviar declaración"
+  "SubmitStatement": "Enviar declaración",
+  "Yes": "Sí",
+  "No": "No"
 }
