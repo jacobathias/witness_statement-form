@@ -33,14 +33,14 @@ export default function SelectEHS({ onChange, value }) {
       name: "Agustin Uribe",
       email: "agustin.uribe@pgtindustries.com",
     },
-    {
-      name: "Jake Personal",
-      email: "jacobathias.stm@gmail.com",
-    },
-    {
-      name: "This email",
-      email: "inaciojacobit@gmail.com",
-    },
+    // {
+    //   name: "Jake Personal",
+    //   email: "jacobathias.stm@gmail.com",
+    // },
+    // {
+    //   name: "This email",
+    //   email: "inaciojacobit@gmail.com",
+    // },
   ];
 
   return (

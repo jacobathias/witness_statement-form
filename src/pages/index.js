@@ -28,7 +28,7 @@ export default function Home (){
   //Hooks
   const { t } = useTranslation('common');
   const router = useRouter()
-  // function t(x) {return x} 
+
   const [state, setState] =         useState(initState);
   const [touched, setTouched] =     useState({});
   const [timeValue, setTimeValue] = useState(dayjs());
@@ -38,22 +38,11 @@ export default function Home (){
   const [isSigned, setIsSigned] =   useState(false);
   const [theSignature, setSignature] =   useState('');
   const [canSubmit, setCanSubmit] = useState(false)
-  const [isSafetyViolated, setIsSafetyViolated] = useState(false)
+  const [isSafetyViolated, setIsSafetyViolated] = useState(true)
+  useEffect(()=> {allowSubmit()})
+// Handles
   
-  let sigPad = useRef({});
-  
-  const { values, isLoading, error } = state;
-  
-  
-  // Handles
-
- 
-
-  const handleEHS = (event) =>  {
-    setEHS(event.target.value);
-  };
-
-
+  const handleEHS = (event) =>  {setEHS(event.target.value);};
   const handleLang = (event) => {
     const newLocale = event.target.value;
     const { pathname, asPath, query } = router
@@ -61,26 +50,20 @@ export default function Home (){
     i18n.changeLanguage(newLocale);
     setLanguage(newLocale);
   };
-
-   useEffect(()=> {
-      allowSubmit()
-  })
-
-    
-    const handleChange = ({ target }) =>  setState((prev) =>   ({ ...prev, values:{ ...prev.values, [target.name]: target.value },[target.name]: true}));
-    const onBlur       = ({ target }) =>  setTouched((prev) => ({ ...prev, [target.name]: true }));
-    const handleTime   =  (newValue)  => {setTimeValue(newValue);};
-    const handleDate   =  (newValue)  => {setDateValue(newValue);};
-    const handleSigned =  (target)    => {setIsSigned(target);}
-    const handleIsSafetyViolated   =  (event)  => {setIsSafetyViolated(event.target.checked);};
-
-
-
-    
-    let Signature;
+  const handleChange = ({ target }) =>  setState((prev) =>   ({ ...prev, values:{ ...prev.values, [target.name]: target.value },[target.name]: true}));
+  const onBlur       = ({ target }) =>  setTouched((prev) => ({ ...prev, [target.name]: true }));
+  const handleTime   =  (newValue)  => {setTimeValue(newValue);};
+  const handleDate   =  (newValue)  => {setDateValue(newValue);};
+  const handleIsSafetyViolated   =  (event)  => {setIsSafetyViolated(event.target.checked);};
+  // const handleSigned =  (target)    => {setIsSigned(target);}
+  
+  const { values, isLoading, error } = state;
+  let sigPad = useRef({});
+  let Signature;
 
   //Busines Rules
-  const onSubmit = async () => {setState((prev) => ({ ...prev, isLoading: true }));    
+  const onSubmit = async () => {setState((prev) => ({ ...prev, isLoading: true }));  
+
   try {
     var tObj;
     if (language !='en') {
@@ -114,6 +97,15 @@ export default function Home (){
     setIsSigned(true)
   }
 
+  function checkSafetyRuleViolated(){
+    console.log(isSafetyViolated)
+    if (isSafetyViolated) {
+      return true}
+    else {
+      values.safetyRuleViolated = 'No'
+      return false}
+  }
+
   function allowSubmit(){
     setCanSubmit(false) 
     if (!values.employeeName) return 
@@ -121,6 +113,8 @@ export default function Home (){
     if (!values.describeTheWork) return 
     if (!values.indicateWhichPart) return 
     if (!values.toAvoid) return 
+    checkSafetyRuleViolated()
+    console.log(checkSafetyRuleViolated)
     if (!values.safetyRuleViolated) return 
     if (isSigned== false) return
     setCanSubmit(true) 
