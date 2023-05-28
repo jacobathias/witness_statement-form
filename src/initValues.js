@@ -7,11 +7,9 @@ export const enValues = {
     supTelephone: "42312356",
     supEmail: "jacobathias.stm@gmail.com",
     pleaseDescribe: "Estaba caminando y tropecé y me caí",
-    describeTheWork: "Corriendo dentro de la oficina",
     indicateWhichPart: "Nalgas izquierdas",
     toAvoid: "Ya no correré dentro de la oficina",
-    safetyRuleViolated: "No se viola la regla, está bien correr dentro de la oficina"
-  };
+    safetyRuleViolated: "Yes"  };
   //Spanish 
   export const esValues = {
     employeeName: "Jacob Athias",
@@ -22,10 +20,9 @@ export const enValues = {
     supTelephone: "42312356",
     supEmail: "jacobathias.stm@gmail.com",
     pleaseDescribe: "Estaba caminando y tropecé y me caí",
-    describeTheWork: "Corriendo dentro de la oficina",
     indicateWhichPart: "Nalgas izquierdas",
     toAvoid: "Ya no correré dentro de la oficina",
-    safetyRuleViolated: "No se viola la regla, está bien correr dentro de la oficina"
+    safetyRuleViolated: "Yes"
   };
   
   export const emptyValues = {
@@ -37,10 +34,9 @@ export const enValues = {
     supTelephone: '',
     supEmail: '',
     pleaseDescribe: '',
-    describeTheWork: '',
     indicateWhichPart: '',
     toAvoid: '',
-    safetyRuleViolated: '',
+    safetyRuleViolated: "Yes",
     affirm: "",
     signature: "",
     dateSigned: "",

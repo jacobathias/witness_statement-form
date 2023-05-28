@@ -1,6 +1,6 @@
 
 import React, { useState, useRef,useEffect } from "react";
-import {Container,Grid,TextField,Button,Card,Divider, Box, Switch, Collapse} from "@mui/material";
+import {Container,Grid,TextField,Button,Card,Divider, Box, Switch} from "@mui/material";
 
 import TitleT from "../../components/TitleT";
 import LabelT from "../../components/LabelT";
@@ -20,7 +20,6 @@ import { useTranslation, i18n } from 'next-i18next'
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from 'next/router'
 import SignatureCanvas from 'react-signature-canvas'
-import InputMask from 'react-input-mask';
 
 const initState = { values: emptyValues };
 
@@ -66,10 +65,11 @@ export default function Home (){
 
   try {
     var tObj;
+    if (language == undefined) {setLanguage('en')}
     if (language !='en') {
       var str = await Translate(language, makeLongString())
-      const [employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, describeTheWork, indicateWhichPart, toAvoid, safetyRuleViolated] = str.split(" || ");
-       tObj = {employeeName,workingTitle,personalNumber,siteLocation,supervisorName,supTelephone,supEmail,pleaseDescribe,describeTheWork,indicateWhichPart,toAvoid,safetyRuleViolated};
+      const   [employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, safetyRuleViolated] = str.split(" || ");
+       tObj = {employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, safetyRuleViolated};
     }
       //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
       const new_values = {...values,
@@ -80,6 +80,7 @@ export default function Home (){
         Signature: `<img src='${theSignature}'/>`
       };
       // debugger;
+      console.log(new_values)
       await sendContactForm(new_values);
       setTouched({});
       setState(initState);
@@ -100,7 +101,7 @@ export default function Home (){
   function checkSafetyRuleViolated(){
     console.log(isSafetyViolated)
     if (isSafetyViolated) {
-      return true}
+      return values.safetyRuleViolated = 'Yes'}
     else {
       values.safetyRuleViolated = 'No'
       return false}
@@ -110,12 +111,9 @@ export default function Home (){
     setCanSubmit(false) 
     if (!values.employeeName) return 
     if (!values.pleaseDescribe) return 
-    if (!values.describeTheWork) return 
     if (!values.indicateWhichPart) return 
     if (!values.toAvoid) return 
     checkSafetyRuleViolated()
-    console.log(checkSafetyRuleViolated)
-    if (!values.safetyRuleViolated) return 
     if (isSigned== false) return
     setCanSubmit(true) 
   }
@@ -126,10 +124,9 @@ export default function Home (){
   return (
     
     <Box>    
-    <Container>
-  
-      {/*  ######################################################################################################### HEADER */}
-      <Grid container spacing={3}  >
+      <Container>    
+        {/*  ################################################################################################################################################################################################################## HEADER */}
+        <Grid container spacing={2}  >
           <Grid item md={6} xs={12}>
             <LanguageSelect
               onChange={handleLang}
@@ -140,297 +137,228 @@ export default function Home (){
             <SelectEHS value={ehs} onChange={handleEHS}></SelectEHS>
           </Grid>
 
-        <Grid item md={12} xs={12} sm={12}>
-          <TitleT>{t("Instructions")}</TitleT>
-          <LabelT>{t("PleaseState")}</LabelT>
-          <TitleT>{t("WitnessEmployeeData")}</TitleT>
-        </Grid>
+          <Grid item md={12} xs={12} sm={12}>
+            <TitleT>{t("Instructions")}</TitleT>
+            <LabelT>{t("PleaseState")}</LabelT>
+            <TitleT>{t("WitnessEmployeeData")}</TitleT>
+          </Grid>
 
-        {/*  ######################################### Witness Employee Data */}
+          {/*  ########################################################################################################################### Witness Employee Data */}
 
-        <Grid item md={4} sm={6} xs={12}>
-          {/* <LabelT>{EmployeeName}</LabelT> */}
-          <TextField
-            type="text"
-            inputMode="text"
-            label={t("EmployeeName")}
-            required
-            fullWidth
-            name="employeeName"
-            error={touched.employeeName && !values.employeeName}
-            value={values.employeeName}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
+          <Grid item md={4} sm={6} xs={12}>
+            {/* <LabelT>{EmployeeName}</LabelT> */}
+            <TextField
+              type="text"
+              inputMode="text"
+              label={t("EmployeeName")}
+              required
+              fullWidth
+              name="employeeName"
+              error={touched.employeeName && !values.employeeName}
+              value={values.employeeName}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
+          </Grid>
 
-        <Grid item md={4} sm={6} xs={12}>
-          <TextField
-            type="input"
-            label={t("WorkingTitle")}
-            fullWidth
-            name="workingTitle"
-            // error={touched.workingTitle && !values.workingTitle}
-            value={values.workingTitle}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
+          <Grid item md={4} sm={6} xs={12}>
+            <TextField
+              type="input"
+              label={t("WorkingTitle")}
+              fullWidth
+              name="workingTitle"
+              value={values.workingTitle}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
+          </Grid>
 
-        <Grid item md={4} xs={12}>
-          <TextField
-            type="number"
-            
-            
-            label={t("PersonalNumber")}
-            fullWidth
-            name="personalNumber"
-            value={values.personalNumber}
-            onChange={handleChange}
-            onBlur={onBlur}
-            inputMode ='tel' pattern="[0-9]*"
-inputProps={{ inputMode: 'tel' }}
-          ></TextField>
-        </Grid>
-        {/* <PdfComp></PdfComp> */}
+          <Grid item md={4} xs={12}>
+            <TextField
+              type="number" 
+              label={t("PersonalNumber")}
+              fullWidth
+              name="personalNumber"
+              value={values.personalNumber}
+              onChange={handleChange}
+              onBlur={onBlur}
+              inputMode ='tel' pattern="[0-9]*"
+              inputProps={{ inputMode: 'tel' }}
+            ></TextField>
+          </Grid>
+          {/* <PdfComp></PdfComp> */}
 
-        <Grid item md={4} xs={6}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker 
-              label={t("DateOfIncident")}
-              inputFormat="MM/DD/YYYY"
-              value={dateValue}
-              onChange={handleDate}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </Grid>
+          <Grid item md={4} xs={6}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker 
+                label={t("DateOfIncident")}
+                inputFormat="MM/DD/YYYY"
+                value={dateValue}
+                onChange={handleDate}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Grid>
 
-        <Grid item md={4} xs={6}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <TimePicker
-              // components={{ OpenPickerIcon: AccessTimeIcon }}
-              value={timeValue}
-              label={t("TimeOfIncident")}
-              onChange={handleTime}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </Grid>
+          <Grid item md={4} xs={6}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <TimePicker
+                // components={{ OpenPickerIcon: AccessTimeIcon }}
+                value={timeValue}
+                label={t("TimeOfIncident")}
+                onChange={handleTime}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Grid>
 
-        <Grid item md={12} sm={12} xs={12}>
-          <TextField
-            type="text"
-            label={t("SiteLocation")}
-            fullWidth
-            multiline
-            name="siteLocation"
-            value={values.siteLocation}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
+          <Grid item md={12} sm={12} xs={12}>
+            <TextField
+              type="text"
+              label={t("SiteLocation")}
+              fullWidth
+              multiline
+              name="siteLocation"
+              value={values.siteLocation}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
+          </Grid>
 
-        <Grid item md={4} sm={6} xs={12}>
-          <TextField
-            type="text"
-            label={t("SupervisorName")}
-            fullWidth
-            name="supervisorName"
-            // error={touched.supervisorName && !values.supervisorName}
-            value={values.supervisorName}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
+          <Grid item md={4} sm={6} xs={12}>
+            <TextField
+              type="text"
+              label={t("SupervisorName")}
+              fullWidth
+              name="supervisorName"
+              value={values.supervisorName}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
+          </Grid>
 
-        <Grid item md={4} sm={6} xs={12}>
-        
-          <TextField
-            type="number"
-            label={t("SupTelephone")}
-            fullWidth
-            name ="supTelephone"
-            inputMode ='tel' pattern="[0-9]*" 
-            inputProps={{ inputMode: 'tel' }}            // error={touched.supTelephone && !values.supTelephone}
-            
-            value={values.supTelephone}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
+          <Grid item md={4} sm={6} xs={12}>
           
-        </Grid>
+            <TextField
+              type="number"
+              label={t("SupTelephone")}
+              fullWidth
+              name ="supTelephone"
+              inputMode ='tel' pattern="[0-9]*" 
+              inputProps={{ inputMode: 'tel' }}            
+              
+              value={values.supTelephone}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
+            
+          </Grid>
 
-        <Grid item md={4} xs={12}>
-          <TextField
-            type="email"
-            inputMode="email"
-            label={t("SupEmail")}
-            fullWidth
-            name="supEmail"
-            value={values.supEmail}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
+          <Grid item md={4} xs={12}>
+            <TextField
+              type="email"
+              inputMode="email"
+              label={t("SupEmail")}
+              fullWidth
+              name="supEmail"
+              value={values.supEmail}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
+          </Grid>
 
-        {/*  ######################################### Incident Description */}
-        <Grid item md={12} xs={12}>
-          <TitleT>{t("IncidentDescription")}</TitleT>
-        </Grid>
-
-        <Grid item md={12} xs={12}>
-          <LabelT>{t("PleaseDescribe")+' *'}</LabelT>
-          <TextField
-            type="text"
-            fullWidth
-            multiline
-            name="pleaseDescribe"
-            error={touched.pleaseDescribe && !values.pleaseDescribe}
-            value={values.pleaseDescribe}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
-
-        <Grid item md={12} xs={12}>
-          <LabelT>{t("DescribeTheWork")+' *'}</LabelT>
-          <TextField
-            type="text"
-            fullWidth
-            multiline
-            name="describeTheWork"
-            error={touched.describeTheWork && !values.describeTheWork}
-            value={values.describeTheWork}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
-
-        <Grid item md={12} xs={12}>
-          <LabelT>{t("IndicateWhichPart")+' *'}</LabelT>
-          <TextField
-            type="text"
-            fullWidth
-            multiline
-            name="indicateWhichPart"
-            error={touched.indicateWhichPart && !values.indicateWhichPart}
-            value={values.indicateWhichPart}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
-
-        <Grid item md={12} xs={12}>
-          <LabelT>{t("ToAvoid")+' *'}</LabelT>
-          <TextField
-            type="text"
-            fullWidth
-            multiline
-      
-            name="toAvoid"
-            error={touched.toAvoid && !values.toAvoid}
-            value={values.toAvoid}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid>
-
-        {/* <Grid item md={12} xs={12}>
-          <LabelT>{t("SafetyRuleViolated")+' *'}</LabelT>
-          <TextField
-            type="text"
-            fullWidth
-            multiline
-            name="safetyRuleViolated"
-            error={touched.safetyRuleViolated && !values.safetyRuleViolated}
-            value={values.safetyRuleViolated}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-        </Grid> */}
-        
-          <Grid item md={5} xs={6} ><LabelT>{t("SafetyRuleViolated")+' *'}</LabelT></Grid>
-          
-          <Grid item md={2} xs={6}>
-            <Switch size="medium"
-      checked={isSafetyViolated}
-      onChange={handleIsSafetyViolated}
-      inputProps={{ 'aria-label': 'controlled' }}
-          /> {isSafetyViolated ? t ("Yes"): t("No")}
+          {/*  ########################################################################################################################### Incident Description */}
+          <Grid item md={12} xs={12}>
+            <TitleT>{t("IncidentDescription")}</TitleT>
           </Grid>
 
           <Grid item md={12} xs={12}>
-        <Collapse in={isSafetyViolated}>
-              <TextField
-            type="text"
-            fullWidth
-            multiline
-            name="safetyRuleViolated"
-            error={touched.safetyRuleViolated && !values.safetyRuleViolated}
-            value={values.safetyRuleViolated}
-            onChange={handleChange}
-            onBlur={onBlur}
-          ></TextField>
-          </Collapse>
+            <LabelT>{t("PleaseDescribe")+' *'}</LabelT>
+            <TextField
+              type="text"
+              fullWidth
+              multiline
+              name="pleaseDescribe"
+              error={touched.pleaseDescribe && !values.pleaseDescribe}
+              value={values.pleaseDescribe}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
           </Grid>
-        
 
-        <Grid item md={12} xs={12}>
-          <LabelT>{t("Signature")+' *'}</LabelT>
-          <Card elevation={5}>
-            <SignatureCanvas 
-              penColor='blue' 
-              backgroundColor ='white' 
-              onEnd={saveSignature}
-              ref = {sigPad}
+          <Grid item md={12} xs={12}>
+            <LabelT>{t("IndicateWhichPart")+' *'}</LabelT>
+            <TextField
+              type="text"
+              fullWidth
+              multiline
+              name="indicateWhichPart"
+              error={touched.indicateWhichPart && !values.indicateWhichPart}
+              value={values.indicateWhichPart}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
+          </Grid>        
+          
+          <Grid item md={12} xs={12}>
+            <LabelT>{t("ToAvoid")+' *'}</LabelT>
+            <TextField
+              type="text"
+              fullWidth
+              multiline      
+              name="toAvoid"
+              error={touched.toAvoid && !values.toAvoid}
+              value={values.toAvoid}
+              onChange={handleChange}
+              onBlur={onBlur}
+            ></TextField>
+          </Grid>
+
+          <Grid item md={6} xs={6} ><LabelT>{t("SafetyRuleViolated")+' *'}</LabelT></Grid>          
+          <Grid item md={6} xs={6}>
+              <Switch checked={isSafetyViolated} 
+              onChange={handleIsSafetyViolated}/>
+            {isSafetyViolated ? t ("Yes"): t("No")}
+          </Grid>  
+
+          <Grid item md={12} xs={12}>
+            <LabelT>{t("Signature")+' *'}</LabelT>
+            <Card elevation={5}>
+              <SignatureCanvas 
+                penColor='blue' 
+                backgroundColor ='white' 
+                onEnd={saveSignature}
+                ref = {sigPad}
                 canvasProps={{
                   width: 750, 
                   height: 200,
                   className: 'sigCanvas'}} />,
-          </Card>
-          
-            <Grid item md={9} xs={12}></Grid>
-            <Grid item md={3} xs={12}>
-              <Button onClick={clear}>{t("ClearSignature")}</Button>
-            </Grid>
-          
+            </Card>          
+              <Grid item md={9} xs={12}></Grid>
+              <Grid item md={3} xs={12}>
+                <Button onClick={clear}>{t("ClearSignature")}</Button>
+              </Grid>          
+          </Grid>
+
+          <Grid item md={12} xs={12}><Divider></Divider></Grid>
+            <Grid item md={6} sm={6} xs={12} marginBottom={15}>          
+              <LoadingButton size="large"
+                variant="contained"
+                disabled={!canSubmit}
+                endIcon={<SendIcon />}
+                onClick={onSubmit}
+                loading={isLoading}>
+                {t("SubmitStatement")}
+              </LoadingButton>         
+            
+          </Grid>
         </Grid>
-
-        <Grid item md={12} xs={12}><Divider></Divider></Grid>
-        
-         
-
-          <Grid item md={6} sm={6} xs={12} marginBottom={15}>          
-            <LoadingButton size="large"
-              variant="contained"
-              
-
-              // disabled={!isSigned}
-              disabled={!canSubmit}
-              // disabled={!values.name && !values.workingTitle && isSigned}
-              // disabled={!Signature}
-              endIcon={<SendIcon />}
-              onClick={onSubmit}
-              loading={isLoading}
-            >
-              {t("SubmitStatement")}
-            </LoadingButton>         
-          
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
     </Box>
     );
 }
 
 
-
-//getServeSideProps wors too
 export const getStaticProps  = async ({ locale }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale)),
-    },
-  };
+  return {props: {...(await serverSideTranslations(locale))}};
 };

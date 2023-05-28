@@ -117,10 +117,6 @@ export const htmlLayout = (data) => `<head>
       <p>${data.pleaseDescribe}</p>
     </div>
     <div class="form-group">
-      <label>Fully describe the work and conditions in progress leading up to the accident:</label>
-      <p>${data.describeTheWork}</p>
-    </div>
-    <div class="form-group">
       <label>Indicate which part(s) of the body were injured (if any):</label>
       <p>${data.indicateWhichPart}</p>
     </div>
@@ -155,10 +151,7 @@ if (data.Translation != undefined)
       <label>Please describe in your own words (in detail) the sequence of events that led to this incident:</label>
       <p>${data.Translation.pleaseDescribe}</p>
     </div>
-    <div class="form-group">
-      <label>Fully describe the work and conditions in progress leading up to the accident:</label>
-      <p>${data.Translation.describeTheWork}</p>
-    </div>
+
     <div class="form-group">
       <label>Indicate which part(s) of the body were injured (if any):</label>
       <p>${data.Translation.indicateWhichPart}</p>
