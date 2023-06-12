@@ -1,6 +1,8 @@
 export async function Translate(src, text) {
   if (src === "en") {
     return;
+
+    
   } else {
     console.log("Translating");
     const url = "https://text-translator2.p.rapidapi.com/translate";

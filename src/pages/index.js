@@ -21,7 +21,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from 'next/router'
 import SignatureCanvas from 'react-signature-canvas'
 
-const initState = { values: emptyValues };
+const initState = { values: enValues };
 
 export default function Home (){
   //Hooks
