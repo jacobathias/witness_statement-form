@@ -60,32 +60,34 @@ export default function Home (){
   let sigPad = useRef({});
   let Signature;
 
-  //Busines Rules
-  const onSubmit = async () => {setState((prev) => ({ ...prev, isLoading: true }));  
+  //Business Rules
+  const onSubmit = async () => {
+    setState((prev) => ({ ...prev, isLoading: true }));  
 
-  try {
-    var tObj;
-    if (language == undefined) {setLanguage('en')}
-    if (language !='en') {
-      var str = await Translate(language, makeLongString())
-      const   [employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, safetyRuleViolated] = str.split(" || ");
-       tObj = {employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, safetyRuleViolated};
-    }
-      //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
-      const new_values = {...values,
-        dateOfIncident: dateValue.format("MM-DD-YYYY"),
-        timeOfIncident: timeValue.format("HH:mm A"),
-        to: [ehs, values.supEmail],
-        Translation:  tObj == undefined ? undefined : tObj,
-        Signature: `<img src='${theSignature}'/>`
-      };
-      // debugger;
-      console.log(new_values)
-      await sendContactForm(new_values);
-      setTouched({});
-      setState(initState);
-    } catch (error) {setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
-  };
+    try {
+      var tObj;
+      if (language == undefined) {setLanguage('en')}
+      if (language !='en') {
+        var longString = await Translate(language, makeLongString())
+        const  [employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, safetyRuleViolated] = longString.split(" || ");
+        tObj = {employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, safetyRuleViolated};
+      }
+        //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
+        const new_values = {...values,
+          dateOfIncident: dateValue.format("MM-DD-YYYY"),
+          timeOfIncident: timeValue.format("HH:mm A"),
+          to: [ehs, values.supEmail],
+          Translation:  tObj == undefined ? undefined : tObj,
+          Signature: `<img src='${theSignature}'/>`
+        };
+        // debugger;
+         console.log(new_values)
+        await sendContactForm(new_values);
+        setTouched({});
+        setState(initState);
+      } catch (error) {
+        setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
+    };
   
   function clear(){
     sigPad.current.clear()
@@ -118,7 +120,7 @@ export default function Home (){
     setCanSubmit(true) 
   }
 
-  // CONVERT AVERY ATRIBUTE INTO ONE STRING FOR TRANSLATION
+  // CONVERT EVERY ATRIBUTE INTO ONE BIG STRING FOR TRANSLATION
   function makeLongString(){ return (Object.values(values).join(' || '));} 
 
   return (
@@ -320,6 +322,7 @@ export default function Home (){
               onChange={handleIsSafetyViolated}/>
             {isSafetyViolated ? t ("Yes"): t("No")}
           </Grid>  
+      
 
           <Grid item md={12} xs={12}>
             <LabelT>{t("Signature")+' *'}</LabelT>
@@ -350,7 +353,7 @@ export default function Home (){
                 loading={isLoading}>
                 {t("SubmitStatement")}
               </LoadingButton>         
-            
+
           </Grid>
         </Grid>
       </Container>

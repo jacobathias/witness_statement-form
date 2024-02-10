@@ -60,7 +60,7 @@ const streamToBase64 = (stream) => {
   
 
   return new Promise((resolve, reject) => {
-    const base64 = new Base64Encode()
+    const base64 = new Base64Encode() // Assinatura
 
     const cbConcat = (base64) => {
       resolve(base64)
@@ -149,7 +149,7 @@ const handler = async (req, res) => {
       };
     
       await sendgrid.send(msg);
-      console.log('Email sent UHAAA');
+      console.log('Email sent UHAAAaaaaa');
       return res.status(200).json({ message: 'Sucesso' });
     } catch (error) {
       console.error(error);
