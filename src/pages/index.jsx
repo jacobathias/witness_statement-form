@@ -41,7 +41,7 @@ export default function Home (){
   const [canSubmit,        setCanSubmit]        = useState(false)
   const [isSafetyViolated, setIsSafetyViolated] = useState(true)
 
-  useConext
+  
   useEffect( ()=> {allowSubmit()} )
 // Handles
   
@@ -132,7 +132,6 @@ export default function Home (){
     if (!values.pleaseDescribe) return 
     if (!values.indicateWhichPart) return 
     if (!values.toAvoid) return 
-    debugger; 
     if (checkSafetyRuleViolated() && !values.SafetyRuleViolated) return
     if (isSigned== false) return
     setCanSubmit(true) 

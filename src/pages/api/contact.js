@@ -31,7 +31,6 @@ import concat from 'concat-stream'
 
 const generateEmailContent = (data) => {
   console.log('Generating Email Content')
-  debugger;
   const htmlLayout = renderToString(<HtmlEmailLayout data={data} />);
   return {
     text: 'stringData',

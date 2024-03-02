@@ -12,8 +12,7 @@ interface ISizeImg{
 
 export const generatePdfByImage = async (layout:any) => {
     try {
-        
-      
+     
       const div = document.createElement('div');
       const htmlstr = renderToStaticMarkup (layout);
       div.innerHTML = htmlstr;
@@ -35,7 +34,7 @@ export const generatePdfByImage = async (layout:any) => {
       doc.addPage();
       doc.addImage(imgPag2,'PNG', 5, 10, width, height);
 
-      const file = doc.save();//TESTE DOWNLOAD PDF
+      //const file = doc.save();//TESTE DOWNLOAD PDF
 
       return doc.output('datauristring')//RETURN ONLY BASE64 (data uri string) PDF
     } catch (error) {
