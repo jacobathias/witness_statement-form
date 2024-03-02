@@ -40,7 +40,8 @@ export default function Home (){
   const [theSignature,     setSignature]        = useState('');
   const [canSubmit,        setCanSubmit]        = useState(false)
   const [isSafetyViolated, setIsSafetyViolated] = useState(true)
-  
+
+  useConext
   useEffect( ()=> {allowSubmit()} )
 // Handles
   
@@ -89,7 +90,6 @@ export default function Home (){
 
       
       //Gera o PDF
-      debugger;
       const html = LayoutPdf({data:new_values})
       const pdf = await generatePdfByImage(html);
       new_values.pdf = pdf;

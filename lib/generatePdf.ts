@@ -11,7 +11,6 @@ interface ISizeImg{
 }
 
 export const generatePdfByImage = async (layout:any) => {
-    debugger;
     try {
         
       
