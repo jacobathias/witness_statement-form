@@ -1,6 +1,6 @@
-export async function Translate(src, text) {
-  if (src === "en") {
-    return;
+export async function Translate(langSource, textToTranslate) {
+  if (langSource === "en") {
+    return; //
 
     
   } else {
@@ -14,13 +14,12 @@ export async function Translate(src, text) {
         "X-RapidAPI-Host": "text-translator2.p.rapidapi.com",
       },
       body: new URLSearchParams({
-        source_language: src,
+        source_language: langSource,
         target_language: "en",
-        text: text,
+        text: textToTranslate,
       }),
     };
 
-	
     try {
       const response = await fetch(url, options);
       const result = await response.json();

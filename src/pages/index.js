@@ -1,6 +1,6 @@
 
 import React, { useState, useRef,useEffect } from "react";
-import {Container,Grid,TextField,Button,Card,Divider, Box, Switch} from "@mui/material";
+import {Container,Grid,TextField,Button,Card,Divider, Box, Switch,Collapse } from "@mui/material";
 
 import TitleT from "../../components/TitleT";
 import LabelT from "../../components/LabelT";
@@ -8,37 +8,40 @@ import LanguageSelect from "../../components/LanguageSelect";
 import SelectEHS from "../../components/SelectEHS";
 import SendIcon from "@mui/icons-material/Send";
 import LoadingButton from "@mui/lab/LoadingButton";
+import dayjs from "dayjs";
 import { sendContactForm } from "../../lib/api";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker  } from "@mui/x-date-pickers";
 import { Translate } from "../Translate";
-import dayjs from "dayjs";
-import {emptyValues, enValues, esValues} from "../initValues"
+import {emptyValues, enValues, esValues, htValues} from "../initValues"
 import { useTranslation, i18n } from 'next-i18next'
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from 'next/router'
 import SignatureCanvas from 'react-signature-canvas'
+import {generatePdfByImage} from '../../lib/generatePdf'
+import LayoutPdf from "../layoutPdf";
 
-const initState = { values: enValues };
+const initState = { values: htValues };
 
 export default function Home (){
   //Hooks
   const { t } = useTranslation('common');
   const router = useRouter()
 
-  const [state, setState] =         useState(initState);
-  const [touched, setTouched] =     useState({});
-  const [timeValue, setTimeValue] = useState(dayjs());
-  const [dateValue, setDateValue] = useState(dayjs());
-  const [language, setLanguage] =   useState(router?.locale ?? "en");
-  const [ehs, setEHS] =             useState('jathias@pgtindustries.com');
-  const [isSigned, setIsSigned] =   useState(false);
-  const [theSignature, setSignature] =   useState('');
-  const [canSubmit, setCanSubmit] = useState(false)
+  const [state,            setState]            = useState(initState);
+  const [touched,          setTouched]          = useState({});
+  const [timeValue,        setTimeValue]        = useState(dayjs());
+  const [dateValue,        setDateValue]        = useState(dayjs());
+  const [language,         setLanguage]         = useState(router?.locale ?? "en");
+  const [ehs,              setEHS]              = useState('jathias@pgtindustries.com');
+  const [isSigned,         setIsSigned]         = useState(false);
+  const [theSignature,     setSignature]        = useState('');
+  const [canSubmit,        setCanSubmit]        = useState(false)
   const [isSafetyViolated, setIsSafetyViolated] = useState(true)
-  useEffect(()=> {allowSubmit()})
+  
+  useEffect( ()=> {allowSubmit()} )
 // Handles
   
   const handleEHS = (event) =>  {setEHS(event.target.value);};
@@ -63,30 +66,41 @@ export default function Home (){
   //Business Rules
   const onSubmit = async () => {
     setState((prev) => ({ ...prev, isLoading: true }));  
-
     try {
       var tObj;
       if (language == undefined) {setLanguage('en')}
       if (language !='en') {
         var longString = await Translate(language, makeLongString())
-        const  [employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, safetyRuleViolated] = longString.split(" || ");
-        tObj = {employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, safetyRuleViolated};
+        const  [
+          employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, isSafetyRuleViolated, SafetyRuleViolated] = longString.split(" || ");
+        tObj = {employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, isSafetyRuleViolated, SafetyRuleViolated};
       }
-        //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
-        const new_values = {...values,
-          dateOfIncident: dateValue.format("MM-DD-YYYY"),
-          timeOfIncident: timeValue.format("HH:mm A"),
-          to: [ehs, values.supEmail],
-          Translation:  tObj == undefined ? undefined : tObj,
-          Signature: `<img src='${theSignature}'/>`
-        };
-        // debugger;
-         console.log(new_values)
-        await sendContactForm(new_values);
-        setTouched({});
-        setState(initState);
-      } catch (error) {
-        setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
+
+      //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
+      const new_values = {
+        ...values,
+        dateOfIncident: dateValue.format("MM-DD-YYYY"),
+        timeOfIncident: timeValue.format("HH:mm A"),
+        to: [ehs, values.supEmail],
+        Translation: tObj == undefined ? undefined : tObj,
+        pdf:'',
+        Signature: theSignature
+      };
+
+      
+      //Gera o PDF
+      debugger;
+      const html = LayoutPdf({data:new_values})
+      const pdf = await generatePdfByImage(html);
+      new_values.pdf = pdf;
+      
+      //SEND MAIL -------------
+      await sendContactForm(new_values);
+
+      setTouched({});
+      setState(initState);
+    } catch (error) {
+      setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
     };
   
   function clear(){
@@ -101,27 +115,32 @@ export default function Home (){
   }
 
   function checkSafetyRuleViolated(){
-    console.log(isSafetyViolated)
     if (isSafetyViolated) {
-      return values.safetyRuleViolated = 'Yes'}
+      values.isSafetyRuleViolated = 'Yes'
+      return true
+    }
     else {
-      values.safetyRuleViolated = 'No'
-      return false}
+      values.isSafetyRuleViolated = 'No'
+      return false
+    }
   }
 
   function allowSubmit(){
+    
     setCanSubmit(false) 
     if (!values.employeeName) return 
     if (!values.pleaseDescribe) return 
     if (!values.indicateWhichPart) return 
     if (!values.toAvoid) return 
-    checkSafetyRuleViolated()
+    debugger; 
+    if (checkSafetyRuleViolated() && !values.SafetyRuleViolated) return
     if (isSigned== false) return
     setCanSubmit(true) 
+
   }
 
   // CONVERT EVERY ATRIBUTE INTO ONE BIG STRING FOR TRANSLATION
-  function makeLongString(){ return (Object.values(values).join(' || '));} 
+  function makeLongString() { return (Object.values(values).join(' || '));} 
 
   return (
     
@@ -269,7 +288,7 @@ export default function Home (){
             ></TextField>
           </Grid>
 
-          {/*  ########################################################################################################################### Incident Description */}
+          {/*  ###################################################################################################### Incident Description */}
           <Grid item md={12} xs={12}>
             <TitleT>{t("IncidentDescription")}</TitleT>
           </Grid>
@@ -280,6 +299,7 @@ export default function Home (){
               type="text"
               fullWidth
               multiline
+              minRows={3}    
               name="pleaseDescribe"
               error={touched.pleaseDescribe && !values.pleaseDescribe}
               value={values.pleaseDescribe}
@@ -294,6 +314,7 @@ export default function Home (){
               type="text"
               fullWidth
               multiline
+              minRows={3}    
               name="indicateWhichPart"
               error={touched.indicateWhichPart && !values.indicateWhichPart}
               value={values.indicateWhichPart}
@@ -307,7 +328,8 @@ export default function Home (){
             <TextField
               type="text"
               fullWidth
-              multiline      
+              multiline
+              minRows={3}          
               name="toAvoid"
               error={touched.toAvoid && !values.toAvoid}
               value={values.toAvoid}
@@ -318,12 +340,29 @@ export default function Home (){
 
           <Grid item md={6} xs={6} ><LabelT>{t("SafetyRuleViolated")+' *'}</LabelT></Grid>          
           <Grid item md={6} xs={6}>
-              <Switch checked={isSafetyViolated} 
-              onChange={handleIsSafetyViolated}/>
+            <Switch checked={isSafetyViolated} 
+            onChange={handleIsSafetyViolated}/>
             {isSafetyViolated ? t ("Yes"): t("No")}
           </Grid>  
+            <Grid item md={12} xs={12}>
+          <Collapse in={isSafetyViolated}>
+          <LabelT>{t("WhichRule")+' *'}</LabelT>
+              <TextField 
+              type="text"
+              fullWidth
+              multiline
+              required={isSafetyViolated}
+              minRows={3}
+              name="SafetyRuleViolated"
+              error={touched.SafetyRuleViolated && !values.SafetyRuleViolated}
+              value={values.SafetyRuleViolated}
+              onChange={handleChange}
+              onBlur={onBlur}
+              ></TextField>
+          </Collapse>
+            </Grid>
       
-
+          {/* ############################################################################## SIGANTURE */}
           <Grid item md={12} xs={12}>
             <LabelT>{t("Signature")+' *'}</LabelT>
             <Card elevation={5}>
@@ -342,19 +381,19 @@ export default function Home (){
                 <Button onClick={clear}>{t("ClearSignature")}</Button>
               </Grid>          
           </Grid>
-
+          {/* ##################################################################################### Submit */}
           <Grid item md={12} xs={12}><Divider></Divider></Grid>
-            <Grid item md={6} sm={6} xs={12} marginBottom={15}>          
-              <LoadingButton size="large"
-                variant="contained"
-                disabled={!canSubmit}
-                endIcon={<SendIcon />}
-                onClick={onSubmit}
-                loading={isLoading}>
-                {t("SubmitStatement")}
-              </LoadingButton>         
-
+          <Grid item md={6} sm={6} xs={12} marginBottom={15}>          
+            <LoadingButton size="large"
+            variant="contained"
+            disabled={!canSubmit}
+            endIcon={<SendIcon />}
+            onClick={onSubmit}
+            loading={isLoading}>
+            {t("SubmitStatement")}
+            </LoadingButton>
           </Grid>
+        
         </Grid>
       </Container>
     </Box>

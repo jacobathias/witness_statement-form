@@ -17,6 +17,7 @@
   "DescribeTheWork": "Fully describe the work and conditions in progress leading up to the accident:",
   "IndicateWhichPart": "Indicate which part(s) of the body were injured (if any):",
   "ToAvoid": "Describe what the employee could have done to avoid this incident and what steps should be taken to prevent a similar occurrence:",
+  "WhichRule": "Describe, to your best knowledge, which rule was violated.",
   "SafetyRuleViolated": "To your knowledge was a safety rule violated?",
   "Affirm": "Affirmation",
   "Affirmation": "“I  affirm that the facts contained in this statement are true and correct to be best of my belief.”",

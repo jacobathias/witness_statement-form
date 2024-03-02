@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 
-export default async function handler(req, res) {
+export default async function handler(req, res) { 
 
     sendgrid.setApiKey(process.env.SENDGRID_API_KEY );
   // using Twilio SendGrid's v3 Node.js Library
@@ -28,7 +28,6 @@ export default async function handler(req, res) {
     ],
   };
   
-
   sendgrid
     .send(msg)
     .then(() => {
