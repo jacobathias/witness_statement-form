@@ -18,29 +18,29 @@ export default function SelectEHS({ onChange, value }) {
 
   const EHSagents = [
     {
-      name: "Jacob Athias",
-      email: "jathias@pgtindustries.com",
-    },
-    {
-      name: "Kristyn Kauffman",
+      name: "Kristyn Kauffman - A shift",
       email: "kkauffman@pgtindustries.com",
     },
     {
-      name: "Jon Fitzgerald",
+      name: "Jon Fitzgerald - A Shift",
       email: "jfitzgerald@pgtindustries.com",
     },
     {
-      name: "Agustin Uribe",
+      name: "Joshua Bauer - A Shift",
+      email: "josh.bauer@pgtinnovations.com",
+    },
+    {
+      name: "Agustin Uribe - B Shift",
       email: "agustin.uribe@pgtindustries.com",
     },
-    // {
-    //   name: "Jake Personal",
-    //   email: "jacobathias.stm@gmail.com",
-    // },
-    // {
-    //   name: "This email",
-    //   email: "inaciojacobit@gmail.com",
-    // },
+    {
+      name: "Jacob Athias - C/D Shift",
+      email: "jathias@pgtindustries.com",
+    },
+    {
+      name: "Karen Previti - DOT",
+      email: "kpreviti@pgtindustries.com",
+    }
   ];
 
   return (

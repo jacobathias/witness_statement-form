@@ -60,8 +60,9 @@ export default function LayoutPdf({data,ref}){
         
         
           <br/>  
+       
           <h2>Incident Description</h2>
-          
+
           <div className="form2">
             <div className="form-group">
               <label>PLEASE DESCRIBE IN YOUR OWN WORDS (IN DETAIL) THE SEQUENCE OF EVENTS THAT LED TO THIS INCIDENT:</label>
@@ -77,11 +78,7 @@ export default function LayoutPdf({data,ref}){
             </div>
             <div className="form-group">
               <label>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</label>
-            
               <p>{data.SafetyRuleViolated}</p>
-              <br/>
-              <br/>
-              <br/>
               <p>I, {data.employeeName}, affirm that the facts contained in this statement are true and correct to be best of my belief.</p>
               
             </div>
@@ -94,10 +91,14 @@ export default function LayoutPdf({data,ref}){
               data.Translation != undefined &&
               (<div className="Box-Email-Translated" ref={ref}>
             
-              
+            
+         
+           
+      
                 <div className="form2">
+                    <h2 className="text-center">THIS IS AN AUTOMATIC TRANSLATION OF THE ORIGINAL STATEMENT</h2>
                   <div className="form-group">
-                    <label>PLEASE DESCRIBE IN YOUR OWN WORDS (IN DETAIL) THE SEQUENCE OF EVENTS THAT LED TO THIS INCIDENT:</label>
+                  <label>PLEASE DESCRIBE IN YOUR OWN WORDS (IN DETAIL) THE SEQUENCE OF EVENTS THAT LED TO THIS INCIDENT:</label>
                     <p>{data.Translation.pleaseDescribe}</p>
                   </div>
                   <div className="form-group">

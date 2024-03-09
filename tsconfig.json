@@ -18,6 +18,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/api/contact.js", "src/pages/index.js", "components/LanguageSelect.js", "src/pages/_app.js", "src/pages/_document.js", "src/pages/api/mail.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/pages/api/contact.js", "src/pages/index.js", "components/LanguageSelect.js", "src/pages/_app.js", "src/pages/_document.js", "src/pages/api/mail.js", "components/SelectCompany.jsx"],
   "exclude": ["node_modules"]
 }

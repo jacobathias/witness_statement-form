@@ -49,9 +49,10 @@ const handler = async (req, res) => {
     try {
       const emailContent = generateEmailContent(body);
       sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
+      console.log(body.to)
     
       const msg = {
-        to: 'jacobathias.stm@gmail.com',
+        to: body.to,
         from: 'jacobathias.stm@gmail.com',
         subject: `Witness Statement - ${body.employeeName}`,
         text: 'Hermes Statement',

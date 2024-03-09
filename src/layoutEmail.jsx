@@ -15,54 +15,43 @@ return (<>
     <p className="text-center">PLEASE STATE YOUR ACCOUNT OF THE INCIDENT BELOW CLEARLY, HONESTLY, AS FULLY AS POSSIBLE, AND TO THE BEST OF YOUR RECOLLECTION. THE PURPOSE OF AN INVESTIGATION IS TO GATHER FACTS AND PERTINENT INFORMATION ABOUT THE INCIDENT.</p>
       </div>
     </div>
-    <br/>
     
     <h2>Involved Person Information</h2>
     
     <div className="form1"> 
       <div className="form-group">
-        <label>EMPLOYEE NAME</label>
-        <p>{data.employeeName}</p>
+        <label>EMPLOYEE NAME: {data.employeeName}</label>
       </div>
       <div className="form-group">
-        <label>WORKING TITLE</label>
-        <p>{data.workingTitle}</p>
+        <label>WORKING TITLE: {data.workingTitle}</label>
       </div>
       <div className="form-group">
-        <label>PERSONAL NUMBER</label>
-        <p>{data.personalNumber}</p>
+        <label>PERSONAL NUMBER: {data.personalNumber}</label>
       </div>
       <div className="form-group">
-        <label>DATE OF INCIDENT</label>
-        <p>{data.dateOfIncident}</p>
+        <label>DATE OF INCIDENT: {data.dateOfIncident}</label>
       </div>
       <div className="form-group">
-        <label>TIME OF INCIDENT</label>
-        <p>{data.timeOfIncident}</p>
+        <label>TIME OF INCIDENT: {data.timeOfIncident}</label>
       </div>
       <div className="form-group">
-        <label>SITE LOCATION/DEPARTMENT</label>
-        <p>{data.siteLocation}</p>
+        <label>SITE LOCATION/DEPARTMENT: {data.siteLocation}</label>
         </div> 
       </div> 
   
-      <br /><br />
+      
       <h2>Supervisor Information</h2>
       
-      <div className="form1">  
         <div className="form-group">
-          <label>NAME</label>
-          <p>{data.supervisorName}</p>
+          <label>NAME: {data.supervisorName}</label>
         </div>
         <div className="form-group">
-          <label>PHONE NUMBER</label>
-          <p>{data.supTelephone}</p>
+          <label>PHONE NUMBER: {data.supTelephone}</label>
         </div>
         <div className="form-group">
-          <label>EMAIL</label>
-          <p>{data.supEmail}</p>
+          <label>EMAIL: {data.supEmail}</label>
         </div>
-      </div>
+      
       
       
   
@@ -72,24 +61,22 @@ return (<>
     
     <div className="form2">
       <div className="form-group">
-        <label>PLEASE DESCRIBE IN YOUR OWN WORDS (IN DETAIL) THE SEQUENCE OF EVENTS THAT LED TO THIS INCIDENT:</label>
+        <h4>PLEASE DESCRIBE IN YOUR OWN WORDS (IN DETAIL) THE SEQUENCE OF EVENTS THAT LED TO THIS INCIDENT:</h4>
         <p>{data.pleaseDescribe}</p>
       </div>
       <div className="form-group">
-        <label>INDICATE WHICH PARTS(S) OF TH EBODY WERE INJURED (IF ANY):</label>
+        <h3>INDICATE WHICH PARTS(S) OF TH EBODY WERE INJURED (IF ANY):</h3>
         <p>{data.indicateWhichPart}</p>
       </div>
       <div className="form-group">
-        <label>DESCRIBE WHAT THE EMPLOYEE COULD HAVE DONE TO AVOID THIS INCIDENT AND WHAT STEPS SHOULD BE TAKEN TO PREVENT A SIMILAR OCCURANCE:</label>
+        <h3>DESCRIBE WHAT THE EMPLOYEE COULD HAVE DONE TO AVOID THIS INCIDENT AND WHAT STEPS SHOULD BE TAKEN TO PREVENT A SIMILAR OCCURANCE:</h3>
         <p>{data.toAvoid}</p>
       </div>
       <div className="form-group">
-        <label>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</label>
+        <h3>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</h3>
       
         <p>{data.SafetyRuleViolated}</p>
-        <br/>
-        <br/>
-        <br/>
+        <h3>ACKNOWLEDGEMENT</h3>
         <p>I, {data.employeeName}, affirm that the facts contained in this statement are true and correct to be best of my belief.</p>
         
       </div>
@@ -104,19 +91,22 @@ return (<>
        
           <div className="form2">
             <div className="form-group">
-              <label>PLEASE DESCRIBE IN YOUR OWN WORDS (IN DETAIL) THE SEQUENCE OF EVENTS THAT LED TO THIS INCIDENT:</label>
+            <h2 className="text-center warning">SELF TRANSLATION</h2>
+            <h3 className="text-center warning">DICLAIMER: THIS IS AN AUTOMATICALLY TRANSLATION OF THE ORIGINAL STATEMENT</h3>
+
+              <h3>PLEASE DESCRIBE IN YOUR OWN WORDS (IN DETAIL) THE SEQUENCE OF EVENTS THAT LED TO THIS INCIDENT:</h3>
               <p>{data.Translation.pleaseDescribe}</p>
             </div>
             <div className="form-group">
-              <label>INDICATE WHICH PARTS(S) OF TH EBODY WERE INJURED (IF ANY) Indicate which part(s) of the body were injured (if any):</label>
+              <h3>INDICATE WHICH PARTS(S) OF TH EBODY WERE INJURED (IF ANY) Indicate which part(s) of the body were injured (if any):</h3>
               <p>{data.Translation.indicateWhichPart}</p>
             </div>
             <div className="form-group">
-              <label>DESCRIBE WHAT THE EMPLOYEE COULD HAVE DONE TO AVOID THIS INCIDENT AND WHAT STEPS SHOULD BE TAKEN TO PREVENT A SIMILAR OCCURANCE:</label>
+              <h3>DESCRIBE WHAT THE EMPLOYEE COULD HAVE DONE TO AVOID THIS INCIDENT AND WHAT STEPS SHOULD BE TAKEN TO PREVENT A SIMILAR OCCURANCE:</h3>
               <p>{data.Translation.toAvoid}</p>
             </div>
             <div className="form-group">
-              <label>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</label>
+              <h3>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</h3>
               <p>{data.Translation.SafetyRuleViolated}</p>
             </div>
           </div>

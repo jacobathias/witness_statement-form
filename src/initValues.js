@@ -5,7 +5,7 @@ export const enValues = {
     siteLocation: "EHS Office - Venice",
     supervisorName: "K.Kauffman",
     supTelephone: "42312356",
-    supEmail: "jathiaspgt@gmail.com",
+    supEmail: "jacobathias.stm@gmail.com",
     pleaseDescribe: "I was walking in the office and I tripped and fell",
     indicateWhichPart: "Left buttocks",
     toAvoid: "I shouldn't run inside the office",
@@ -20,7 +20,7 @@ export const enValues = {
     siteLocation: "EHS Office - Venice",
     supervisorName: "K.Kauffman",
     supTelephone: "42312356",
-    supEmail: "jathiaspgt@gmail.com",
+    supEmail: "jacobathias.stm@gmail.com",
     pleaseDescribe: "Estaba caminando y tropecé y me caí",
     indicateWhichPart: "Nalgas izquierdas",
     toAvoid: "Ya no correré dentro de la oficina",
@@ -34,7 +34,7 @@ export const enValues = {
     siteLocation: "Biyè Ofis EHS - Venis", // EHS Office - Venice
     supervisorName: "K.Kauffman", // Non chanje
     supTelephone: "42312356", // Non chanje
-    supEmail: "jathiaspgt@gmail.com", // Non chanje
+    supEmail: "jacobathias.stm@gmail.com", // Non chanje
     pleaseDescribe: "Mwen te ap mache nan biwo a ak mwen tonbe", // I was walking in the office and I tripped and fell
     indicateWhichPart: "Bout antye goch m'", // Left buttocks
     toAvoid: "Mwen pa ta dwe kouri andedan biwo a", // I shouldn't run inside the office
