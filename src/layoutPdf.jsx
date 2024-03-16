@@ -77,24 +77,23 @@ export default function LayoutPdf({data,ref}){
               <p>{data.toAvoid}</p>
             </div>
             <div className="form-group">
-              <label>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</label>
+              <label>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED? IF YES, WHAT COULD YOU HAVE DONE TO AVOID IT?</label>
+              <p>{data.isSafetyRuleViolated}</p>
               <p>{data.SafetyRuleViolated}</p>
-              <p>I, {data.employeeName}, affirm that the facts contained in this statement are true and correct to be best of my belief.</p>
-              
             </div>
+            <div className="form-group">
+              <label>ACKNOWLEDGEMENT</label>
+              <p>I, {data.employeeName}, affirm that the facts contained in this statement are true and correct to be best of my belief.</p>
+            </div>
+              
           </div>
-          <div><img src={data.Signature} width='400'/></div>
+            <div><img src={data.Signature} width='400'/></div>
           </div>
           {
               /**-------------------- PAGE 2 --------------------- */
 
               data.Translation != undefined &&
               (<div className="Box-Email-Translated" ref={ref}>
-            
-            
-         
-           
-      
                 <div className="form2">
                     <h2 className="text-center">THIS IS AN AUTOMATIC TRANSLATION OF THE ORIGINAL STATEMENT</h2>
                   <div className="form-group">
@@ -110,7 +109,8 @@ export default function LayoutPdf({data,ref}){
                     <p>{data.Translation.toAvoid}</p>
                   </div>
                   <div className="form-group">
-                    <label>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</label>
+                    <label>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED? IF YES, WHAT COULD YOU HAVE DONE TO AVOID IT?</label>
+                    <p>{data.Translation.isSafetyRuleViolated}</p>
                     <p>{data.Translation.SafetyRuleViolated}</p>
                   </div>
                 </div>

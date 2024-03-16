@@ -50,7 +50,7 @@ const handler = async (req, res) => {
       const emailContent = generateEmailContent(body);
       sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
       console.log(body.to)
-    
+
       const msg = {
         to: body.to,
         from: 'jacobathias.stm@gmail.com',
@@ -60,7 +60,7 @@ const handler = async (req, res) => {
         attachments: [
           {
             content: body?.pdf.split(',')[1],
-            filename: `Incident Statement - ${body.employeeName} .pdf`,
+            filename: `${body.employeeName} - IS.pdf`,
             type: 'application/pdf',
             disposition: 'attachment',
             encoding: 'base64',

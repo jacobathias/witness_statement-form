@@ -23,7 +23,7 @@ import SignatureCanvas from 'react-signature-canvas'
 import {generatePdfByImage} from '../../lib/generatePdf'
 import LayoutPdf from "../layoutPdf";
 
-const initState = { values: htValues };
+const initState = { values: enValues };
 
 export default function Home (){
   //Hooks
@@ -43,7 +43,7 @@ export default function Home (){
 
   
   useEffect( ()=> {allowSubmit()} )
-// Handles
+// Handless
   
   const handleEHS = (event) =>  {setEHS(event.target.value);};
   const handleLang = (event) => {
@@ -91,7 +91,7 @@ export default function Home (){
       
       //Gera o PDF
       const html = LayoutPdf({data:new_values})
-      const pdf = await generatePdfByImage(html);
+      const pdf = await generatePdfByImage(html,language);
       new_values.pdf = pdf;
       
       //SEND MAIL -------------

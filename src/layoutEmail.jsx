@@ -4,9 +4,7 @@ import dynamic from "next/dynamic";
 
 const GeneratePDF = dynamic(()=>import("./../components/GeneratePDF"),{ssr:false});
 
-export const HtmlEmailLayout = ({data}) => {
-  const ref = useRef(null);
-console.log(data.employeeName)
+export const HtmlEmailLayout = ({data}) => { const ref = useRef(null);
 return (<> 
   <div className="Box-Email" ref={ref}>
     <h2>Instructions</h2>
@@ -73,12 +71,11 @@ return (<>
         <p>{data.toAvoid}</p>
       </div>
       <div className="form-group">
-        <h3>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</h3>
-      
+        <h3>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED? IF YES, WHAT COULD YOU HAVE DONE TO AVOID IT?</h3>
+        <p>{data.isSafetyRuleViolated}</p>
         <p>{data.SafetyRuleViolated}</p>
         <h3>ACKNOWLEDGEMENT</h3>
         <p>I, {data.employeeName}, affirm that the facts contained in this statement are true and correct to be best of my belief.</p>
-        
       </div>
     </div>
     <div><img src={data.Signature} width='400'/></div>
@@ -98,15 +95,17 @@ return (<>
               <p>{data.Translation.pleaseDescribe}</p>
             </div>
             <div className="form-group">
-              <h3>INDICATE WHICH PARTS(S) OF TH EBODY WERE INJURED (IF ANY) Indicate which part(s) of the body were injured (if any):</h3>
+              <h3>INDICATE WHICH PARTS(S) OF THE BODY WERE INJURED (IF ANY) Indicate which part(s) of the body were injured (if any):</h3>
               <p>{data.Translation.indicateWhichPart}</p>
             </div>
             <div className="form-group">
               <h3>DESCRIBE WHAT THE EMPLOYEE COULD HAVE DONE TO AVOID THIS INCIDENT AND WHAT STEPS SHOULD BE TAKEN TO PREVENT A SIMILAR OCCURANCE:</h3>
               <p>{data.Translation.toAvoid}</p>
             </div>
+            
             <div className="form-group">
-              <h3>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED?</h3>
+              <h3>TO YOUR KNOWLEDGE, WAS A SAFETY RULE VIOLATED? IF YES, WHAT COULD YOU HAVE DONE TO AVOID IT?</h3>
+              <p>{data.Translation.isSafetyRuleViolated}</p>
               <p>{data.Translation.SafetyRuleViolated}</p>
             </div>
           </div>
