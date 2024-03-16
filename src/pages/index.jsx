@@ -32,14 +32,21 @@ export default function Home (){
 
   const [state,            setState]            = useState(initState);
   const [touched,          setTouched]          = useState({});
-  const [timeValue,        setTimeValue]        = useState(dayjs());
-  const [dateValue,        setDateValue]        = useState(dayjs());
+  const [timeValue,        setTimeValue]        = useState(null);
+  const [dateValue,        setDateValue]        = useState(null);
+  // const [timeValue,        setTimeValue]        = useState(dayjs());
+  // const [dateValue,        setDateValue]        = useState(dayjs());
   const [language,         setLanguage]         = useState(router?.locale ?? "en");
   const [ehs,              setEHS]              = useState('jathias@pgtindustries.com');
   const [isSigned,         setIsSigned]         = useState(false);
   const [theSignature,     setSignature]        = useState('');
+  const [isEmailValid,     setIsEmailValid]     = useState(null);
+  const [canSign,          setCanSign]          = useState(false)
   const [canSubmit,        setCanSubmit]        = useState(false)
   const [isSafetyViolated, setIsSafetyViolated] = useState(true)
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 
   
   useEffect( ()=> {allowSubmit()} )
@@ -98,7 +105,7 @@ export default function Home (){
       await sendContactForm(new_values);
 
       setTouched({});
-      setState(initState);
+      // setState(initState);
     } catch (error) {
       setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
     };
@@ -128,10 +135,15 @@ export default function Home (){
   function allowSubmit(){
     
     setCanSubmit(false) 
+    setCanSign(false)
+    setIsEmailValid(true)
     if (!values.employeeName) return 
     if (!values.pleaseDescribe) return 
     if (!values.indicateWhichPart) return 
     if (!values.toAvoid) return 
+    setIsEmailValid(values.supEmail === '' || emailRegex.test(values.supEmail));
+    if (isEmailValid == false) return
+    setCanSign(true)
     if (checkSafetyRuleViolated() && !values.SafetyRuleViolated) return
     if (isSigned== false) return
     setCanSubmit(true) 
@@ -211,10 +223,12 @@ export default function Home (){
           <Grid item md={4} xs={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker 
+                required
                 label={t("DateOfIncident")}
                 inputFormat="MM/DD/YYYY"
                 value={dateValue}
                 onChange={handleDate}
+                onBlur={onBlur}
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
@@ -223,6 +237,7 @@ export default function Home (){
           <Grid item md={4} xs={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <TimePicker
+              required
                 // components={{ OpenPickerIcon: AccessTimeIcon }}
                 value={timeValue}
                 label={t("TimeOfIncident")}
@@ -284,6 +299,8 @@ export default function Home (){
               value={values.supEmail}
               onChange={handleChange}
               onBlur={onBlur}
+              error={!isEmailValid } // Set error state based on email validation
+              helperText={!isEmailValid && 'Enter a valid email '} // Display error message if email is invalid
             ></TextField>
           </Grid>
 
@@ -362,6 +379,7 @@ export default function Home (){
             </Grid>
       
           {/* ############################################################################## SIGANTURE */}
+          <Collapse in={canSign}>
           <Grid item md={12} xs={12}>
             <LabelT>{t("Signature")+' *'}</LabelT>
             <Card elevation={5}>
@@ -392,7 +410,9 @@ export default function Home (){
             {t("SubmitStatement")}
             </LoadingButton>
           </Grid>
+          </Collapse>
         
+
         </Grid>
       </Container>
     </Box>
