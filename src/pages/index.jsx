@@ -23,7 +23,7 @@ import SignatureCanvas from 'react-signature-canvas'
 import {generatePdfByImage} from '../../lib/generatePdf'
 import LayoutPdf from "../layoutPdf";
 
-const initState = { values: enValues };
+const initState = { values: emptyValues };
 
 export default function Home (){
   //Hooks
