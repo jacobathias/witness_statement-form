@@ -32,8 +32,8 @@ export default function Home (){
 
   const [state,            setState]            = useState(initState);
   const [touched,          setTouched]          = useState({});
-  const [timeValue,        setTimeValue]        = useState(null);
-  const [dateValue,        setDateValue]        = useState(null);
+  const [timeValue,        setTimeValue]        = useState('');
+  const [dateValue,        setDateValue]        = useState('');
   // const [timeValue,        setTimeValue]        = useState(dayjs());
   // const [dateValue,        setDateValue]        = useState(dayjs());
   const [language,         setLanguage]         = useState(router?.locale ?? "en");
@@ -50,7 +50,6 @@ export default function Home (){
 
   
   useEffect( ()=> {allowSubmit()} )
-// Handless
   
   const handleEHS = (event) =>  {setEHS(event.target.value);};
   const handleLang = (event) => {
@@ -67,48 +66,11 @@ export default function Home (){
   const handleIsSafetyViolated   =  (event)  => {setIsSafetyViolated(event.target.checked);};
   // const handleSigned =  (target)    => {setIsSigned(target);}
   
-  const { values, isLoading, error } = state;
+  const { values, isLoading } = state;
   let sigPad = useRef({});
   let Signature;
 
   //Business Rules
-  const onSubmit = async () => {
-    setState((prev) => ({ ...prev, isLoading: true }));  
-    try {
-      var tObj;
-      if (language == undefined) {setLanguage('en')}
-      if (language !='en') {
-        var longString = await Translate(language, makeLongString())
-        const  [
-          employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, isSafetyRuleViolated, SafetyRuleViolated] = longString.split(" || ");
-        tObj = {employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, isSafetyRuleViolated, SafetyRuleViolated};
-      }
-
-      //Criando um novo objeto com os values do form e adicionando o sdo tempo de data
-      const new_values = {
-        ...values,
-        dateOfIncident: dateValue.format("MM-DD-YYYY"),
-        timeOfIncident: timeValue.format("HH:mm A"),
-        to: [ehs, values.supEmail],
-        Translation: tObj == undefined ? undefined : tObj,
-        pdf:'',
-        Signature: theSignature
-      };
-
-      
-      //Gera o PDF
-      const html = LayoutPdf({data:new_values})
-      const pdf = await generatePdfByImage(html,language);
-      new_values.pdf = pdf;
-      
-      //SEND MAIL -------------
-      await sendContactForm(new_values);
-
-      setTouched({});
-      // setState(initState);
-    } catch (error) {
-      setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
-    };
   
   function clear(){
     sigPad.current.clear()
@@ -138,17 +100,55 @@ export default function Home (){
     setCanSign(false)
     setIsEmailValid(true)
     if (!values.employeeName) return 
+    if (!timeValue) return
     if (!values.pleaseDescribe) return 
     if (!values.indicateWhichPart) return 
     if (!values.toAvoid) return 
+    if (checkSafetyRuleViolated() && !values.SafetyRuleViolated) return
+    
     setIsEmailValid(values.supEmail === '' || emailRegex.test(values.supEmail));
     if (isEmailValid == false) return
     setCanSign(true)
-    if (checkSafetyRuleViolated() && !values.SafetyRuleViolated) return
     if (isSigned== false) return
     setCanSubmit(true) 
 
   }
+  const onSubmit = async () => {
+    setState((prev) => ({ ...prev, isLoading: true }));  
+    try {
+      var tObj;
+      if (language == undefined) {setLanguage('en')}
+      if (language !='en') {
+        var longString = await Translate(language, makeLongString())
+        const  [employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, isSafetyRuleViolated, SafetyRuleViolated] = longString.split(" || ");
+        tObj = {employeeName, workingTitle, personalNumber, siteLocation, supervisorName, supTelephone, supEmail, pleaseDescribe, indicateWhichPart, toAvoid, isSafetyRuleViolated, SafetyRuleViolated};
+      }
+      //Faz um novo objeto com os values do form e adicionando os do tempo de data
+      //Faz um novo objeto chamado new_values
+      const new_values = {
+        ...values,// Abre o array values e adiciona as outras variaveis abaixo
+        dateOfIncident: dateValue.format("MM-DD-YYYY"),
+        timeOfIncident: timeValue.format("HH:mm A"),
+        to: [ehs, values.supEmail],
+        Translation: tObj == undefined ? undefined : tObj,
+        pdf:'',
+        Signature: theSignature
+      };
+      
+      //Gera o PDF
+      const html = LayoutPdf({data:new_values})
+      const pdf = await generatePdfByImage(html,language);
+      new_values.pdf = pdf;
+      
+      //SEND MAIL -------------
+      await sendContactForm(new_values);
+
+      setTouched({});
+      // setState(initState);
+      // setState(initState);
+    } catch (error) {
+      setState((prev) => ({...prev,isLoading: false,error: error.message,}))}
+    };
 
   // CONVERT EVERY ATRIBUTE INTO ONE BIG STRING FOR TRANSLATION
   function makeLongString() { return (Object.values(values).join(' || '));} 
@@ -158,6 +158,10 @@ export default function Home (){
     <Box>    
       <Container>    
         {/*  ################################################################################################################################################################################################################## HEADER */}
+        
+        <Grid spacing={2}>
+          <h2>Hermes Incident Statement</h2>
+        </Grid>
         <Grid container spacing={2}  >
           <Grid item md={6} xs={12}>
             <LanguageSelect
@@ -165,18 +169,16 @@ export default function Home (){
               value={language}
             ></LanguageSelect>
           </Grid>
+
           <Grid item md={6} sm={6} xs={12}>
             <SelectEHS value={ehs} onChange={handleEHS}></SelectEHS>
           </Grid>
-
           <Grid item md={12} xs={12} sm={12}>
             <TitleT>{t("Instructions")}</TitleT>
             <LabelT>{t("PleaseState")}</LabelT>
             <TitleT>{t("WitnessEmployeeData")}</TitleT>
           </Grid>
-
           {/*  ########################################################################################################################### Witness Employee Data */}
-
           <Grid item md={4} sm={6} xs={12}>
             {/* <LabelT>{EmployeeName}</LabelT> */}
             <TextField
@@ -223,13 +225,17 @@ export default function Home (){
           <Grid item md={4} xs={6}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker 
-                required
                 label={t("DateOfIncident")}
                 inputFormat="MM/DD/YYYY"
                 value={dateValue}
                 onChange={handleDate}
                 onBlur={onBlur}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField {...params} 
+                required
+                name='dateOfIncident'
+                error={touched.dateOfIncident && !dateValue}
+                onBlur={onBlur}
+                />}
               />
             </LocalizationProvider>
           </Grid>
@@ -242,7 +248,11 @@ export default function Home (){
                 value={timeValue}
                 label={t("TimeOfIncident")}
                 onChange={handleTime}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => <TextField {...params} 
+                required
+                name='timeOfIncident'
+                error={touched.timeOfIncident && !timeValue}
+                onBlur={onBlur}/>}
               />
             </LocalizationProvider>
           </Grid>
@@ -300,7 +310,7 @@ export default function Home (){
               onChange={handleChange}
               onBlur={onBlur}
               error={!isEmailValid } // Set error state based on email validation
-              helperText={!isEmailValid && 'Enter a valid email '} // Display error message if email is invalid
+              helperText={!isEmailValid && 'Enter a valid email'} // Display error message if email is invalid
             ></TextField>
           </Grid>
 
@@ -415,6 +425,12 @@ export default function Home (){
 
         </Grid>
       </Container>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
+      <br></br>
     </Box>
     );
 }

@@ -54,7 +54,7 @@ const handler = async (req, res) => {
       const msg = {
         to: body.to,
         from: 'jacobathias.stm@gmail.com',
-        subject: `Witness Statement - ${body.employeeName}`,
+        subject: `Incident Statement - ${body.employeeName}`,
         text: 'Hermes Statement',
         html: emailContent.html,
         attachments: [
